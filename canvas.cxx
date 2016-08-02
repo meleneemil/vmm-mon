@@ -207,3 +207,8 @@ void QMainCanvas::Divide(int x,int y)
 {
     canvas->getCanvas()->Divide(x,y);
 }
+
+void QMainCanvas::cd(int x)
+{
+    canvas->getCanvas()->cd(x);
+}

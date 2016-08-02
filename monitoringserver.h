@@ -20,9 +20,14 @@ private:
     std::vector<Chamber*> chambers;
     std::vector<std::vector<QString>> chips;
     QMainCanvas *c_chipStatistics;
+    int noOfChambers=0;
+    int noOfChips=0;
+    int canvas_size_in_x;
+    int canvas_size_in_y;
 
     void configure();
     void makeCanvases();
+    void calculate_canvas_dimensions();
 
 
 signals:

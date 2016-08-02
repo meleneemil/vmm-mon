@@ -44,6 +44,7 @@ public slots:
    void handle_root_events();
    void ModAndUpd();
    void Divide(int,int);
+   void cd(int);
 
 protected:
    QRootCanvas    *canvas;

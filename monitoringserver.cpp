@@ -10,7 +10,6 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
     //first we make the qsocketclient, to read from the socket
     //(later we can make a version to work directly on the vmm2dcs
 
-
     /**
       1) Configuration
       2) Create histos
@@ -20,11 +19,21 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
       ...hmmm
       */
 
+    //read config file
     configure();
-
+    //calculate how many chip histos
+    //and how many chambers, to Divide the
+    //canvas properly
+    calculate_canvas_dimensions();
+    //create the canvases, and of course,
+    //Draw the histograms
     makeCanvases();
 
+    //now we are ready to read from shm/socket
+    //and Fill!
 
+/*
+    //just printing to debug
     for(int i=0;i<chambers.size();i++)
     {
         Chamber *tempChamber = chambers.at(i);
@@ -35,7 +44,7 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
             qDebug() << (tempChips.at(j))->getName();
         std::cout << std::endl;
     }
-
+*/
 }
 
 void MonitoringServer::configure()
@@ -65,8 +74,9 @@ void MonitoringServer::configure()
             for(int i=1;i<list.size();i++)
             {//start from 1, because 0 was the chamber name
                 tempchamber->addChip(list.at(i));
+                noOfChips++;
             }
-
+            noOfChambers++;
             chambers.push_back(tempchamber);
 
         }
@@ -94,8 +104,38 @@ void MonitoringServer::makeCanvases()
     c_chipStatistics->show();
     c_chipStatistics->Divide(canvas_size_in_x,canvas_size_in_y);
 
+    int temp_cd=1;
+    for(int i=0;i<chambers.size();i++)
+    {
+        Chamber *temp_chamber = chambers.at(i);
+        std::vector<Chip*> temp_chips = temp_chamber->getChips();
+
+        for(int j=0;j<temp_chips.size();j++)
+        {
+            Chip *tempChip = temp_chips.at(j);
+
+            c_chipStatistics->cd(temp_cd);
+            tempChip->drawChannelStatistics();
+            temp_cd++;
+            c_chipStatistics->cd(temp_cd);
+            tempChip->drawPdoStatistics();
+            temp_cd++;
+            c_chipStatistics->cd(temp_cd);
+            tempChip->drawTdoStatistics();
+            temp_cd++;
+            c_chipStatistics->cd(temp_cd);
+            tempChip->drawBCIDStatistics();
+            temp_cd++;
+        }
+    }
 
 
 
 }
 
+void MonitoringServer::calculate_canvas_dimensions()
+{
+    //the canvas will have a line for every chip
+    canvas_size_in_y = noOfChips;
+    canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+}

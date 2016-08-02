@@ -5,7 +5,7 @@ QSocketClient::QSocketClient()
 {
     socket = new QLocalSocket();
 
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readFortune()));
+    connect(socket, SIGNAL(readyRead()), this, SLOT(readSocket()));
     connect(socket, SIGNAL(error(QLocalSocket::LocalSocketError)),
             this, SLOT(displayError(QLocalSocket::LocalSocketError)));
 
