@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_b_startMonitoring_released();
+//    void on_b_startMonitoring_released();
 
 private:
     Ui::MainWindow *ui;

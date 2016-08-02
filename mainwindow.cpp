@@ -11,10 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+//    QApplication::quit();
 }
 
-void MainWindow::on_b_startMonitoring_released()
-{
-    new MonitoringServer();
-    this->hide();
-}
+//void MainWindow::on_b_startMonitoring_released()
+//{
+//    new MonitoringServer();
+//    this->hide();
+//}

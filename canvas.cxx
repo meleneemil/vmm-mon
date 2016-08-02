@@ -138,21 +138,16 @@ QMainCanvas::QMainCanvas(QWidget *parent) : QWidget(parent)
 
     QVBoxLayout *l = new QVBoxLayout(this);
     l->addWidget(canvas = new QRootCanvas(this));
-    l->addWidget(b = new QPushButton("&Draw Histogram", this));
-    connect(b, SIGNAL(clicked()), this, SLOT(clicked1()));
+//    l->addWidget(b = new QPushButton("&Draw Histogram", this));
+//    connect(b, SIGNAL(clicked()), this, SLOT(clicked1()));
     fRootTimer = new QTimer( this );
-//    QObject::connect( fRootTimer, SIGNAL(timeout()), this, SLOT(handle_root_events()) );
-//    fRootTimer->start( 2 );
+    QObject::connect( fRootTimer, SIGNAL(timeout()), this, SLOT(handle_root_events()) );
+    fRootTimer->start( 20 );
 }
 
 //______________________________________________________________________________
 void QMainCanvas::clicked1()
 {
-
-
-
-
-
     // Handle the "Draw Histogram" button clicked() event.
 /*
     static TH1F *h1f = 0;
@@ -206,4 +201,9 @@ void QMainCanvas::ModAndUpd()
 {
     canvas->getCanvas()->Modified();
     canvas->getCanvas()->Update();
+}
+
+void QMainCanvas::Divide(int x,int y)
+{
+    canvas->getCanvas()->Divide(x,y);
 }

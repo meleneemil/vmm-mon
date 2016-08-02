@@ -24,11 +24,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     monitoringserver.cpp \
     canvas.cxx \
-    qsocketclient.cpp
+    qsocketclient.cpp \
+    chamber.cpp \
+    chip.cpp
 
 HEADERS  += mainwindow.h \
     monitoringserver.h \
     canvas.h \
-    qsocketclient.h
+    qsocketclient.h \
+    chamber.h \
+    chip.h
 
 FORMS    += mainwindow.ui

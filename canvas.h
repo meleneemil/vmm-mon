@@ -43,6 +43,7 @@ public slots:
    void clicked1();
    void handle_root_events();
    void ModAndUpd();
+   void Divide(int,int);
 
 protected:
    QRootCanvas    *canvas;
