@@ -32,7 +32,36 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
     //now we are ready to read from shm/socket
     //and Fill!
 
-/*
+    //let's test it
+
+    for(int iter=0;iter<10000;iter++)
+    {
+
+        for(int i=0;i<chambers.size();i++)
+        {
+            Chamber *temp_chamber = chambers.at(i);
+            std::vector<Chip*> temp_chips = temp_chamber->getChips();
+
+            for(int j=0;j<temp_chips.size();j++)
+            {
+                Chip *tempChip = temp_chips.at(j);
+
+                tempChip->getH_channel_statistics()->Fill(rand()%63);
+                tempChip->getH_pdo_statistics()->Fill(rand()%500);
+                tempChip->getH_tdo_statistics()->Fill(rand()%500);
+                tempChip->getH_bcid_statistics()->Fill(rand()%4096);
+            }
+        }
+
+
+        if(iter%100==0)
+            c_chipStatistics->ModAndUpd();
+    }
+
+
+
+
+    /*
     //just printing to debug
     for(int i=0;i<chambers.size();i++)
     {
