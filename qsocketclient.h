@@ -5,12 +5,17 @@
 #include <QTimer>
 #include <QDataStream>
 
+#include "datahandler.h"
+#include "chamber.h"
+
 class QSocketClient : public QObject
 {
     Q_OBJECT
 
 public:
-    QSocketClient(int);
+    QSocketClient(int,
+                  std::vector<Chamber*>
+                  );
 
 
 private:
@@ -19,6 +24,8 @@ private:
     quint16 blockSize;
     QString currentRead;
     int request_timeout;
+    DataHandler *handler;
+    int noOfSuccessfulRequests;
 
 private slots:
     void connectToServer();
@@ -26,7 +33,7 @@ private slots:
     void stopRequests();
     void displayError(QLocalSocket::LocalSocketError socketError);
     void readSocket();
-    void sendDataToHandler();
+    void sendDataToHandler(QString);
 
 };
 

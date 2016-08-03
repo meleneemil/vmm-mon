@@ -43,7 +43,7 @@ private slots:
     void FillTest();
     void UpdatePads();
     void UpdatePad(int);
-    void startClient();
+//    void startClient();
 
 
 signals:

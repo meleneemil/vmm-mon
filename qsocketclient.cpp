@@ -1,12 +1,14 @@
 #include "qsocketclient.h"
 
-QSocketClient::QSocketClient(int new_request_timeout)
+QSocketClient::QSocketClient(
+        int new_request_timeout,
+        std::vector<Chamber*> chambers)
 {
-
+    noOfSuccessfulRequests=0;
 
     socket = new QLocalSocket();
 
-//handler = new Data
+    handler = new DataHandler(chambers);
 
     //when socket is ready to read, call readSocket()
     connect(socket, SIGNAL(readyRead()), this, SLOT(readSocket()));
@@ -31,36 +33,41 @@ void QSocketClient::connectToServer()
     blockSize = 0;
     socket->abort();
     socket->connectToServer("vmm-mon-server");
-//    qDebug() << "CONNECTED";
+    //    qDebug() << "CONNECTED";
 }
 
 void QSocketClient::readSocket()
 {
     //this code is directly from the Qt example = Fortune Client
-        QDataStream in(socket);
-        in.setVersion(QDataStream::Qt_4_0);
+    QDataStream in(socket);
+    in.setVersion(QDataStream::Qt_4_0);
 
-        if (blockSize == 0) {
-            if (socket->bytesAvailable() < (int)sizeof(quint16))
-            {
-                qDebug() << "no bytes available";
-                return;
-            }
-            in >> blockSize;
-        }
-
-        if (in.atEnd())
-            return;
-
-        QString nextRead;
-        in >> nextRead;
-
-        if (nextRead == currentRead) {
-            QTimer::singleShot(0, this, SLOT(connectToServer()));
+    if (blockSize == 0) {
+        if (socket->bytesAvailable() < (int)sizeof(quint16))
+        {
+            qDebug() << "no bytes available";
             return;
         }
+        in >> blockSize;
+    }
 
-    qDebug() << nextRead;
+    if (in.atEnd())
+        return;
+
+    QString nextRead;
+    in >> nextRead;
+
+    if (nextRead == currentRead) {
+        QTimer::singleShot(0, this, SLOT(connectToServer()));
+        return;
+    }
+
+    //Purely DEBUGGING
+    noOfSuccessfulRequests++;
+    if(noOfSuccessfulRequests%1000==0)
+        qDebug() << nextRead;
+
+    sendDataToHandler(nextRead);
     //    std::vector<QString> eventVector;
     //IMPORTANT TODO: edit to accomodate for multi hit events...
     //this now assumes that each packet tha comes is an event.
@@ -69,27 +76,25 @@ void QSocketClient::readSocket()
     //    emit drawHistograms();
 }
 
-void QSocketClient::sendDataToHandler()
+void QSocketClient::sendDataToHandler(QString data)
 {
-
+    handler->writeData(data);
 }
 
 void QSocketClient::startRequests()
 {
     socket_requests_timer->start(request_timeout);
 }
-
 void QSocketClient::stopRequests()
 {
     socket_requests_timer->stop();
 }
-
 void QSocketClient::displayError(QLocalSocket::LocalSocketError socketError)
 {
     //if socket could not connect, and gives error
     //then stop requests
 
-//    stopRequests();
+    //    stopRequests();
 
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:

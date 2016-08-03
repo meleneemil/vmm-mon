@@ -132,13 +132,21 @@ void QRootCanvas::paintEvent( QPaintEvent * )
 //______________________________________________________________________________
 QMainCanvas::QMainCanvas(QWidget *parent) : QWidget(parent)
 {
+    //make simple layout for the single canvas
     QVBoxLayout *l = new QVBoxLayout(this);
+    //add canvas widget to the layout
     l->addWidget(canvas = new QRootCanvas(this));
+    //this timer is very important
+    //every time it times-out, it tells the
+    //root engine to process the events.
     fRootTimer = new QTimer( this );
     QObject::connect( fRootTimer, SIGNAL(timeout()), this, SLOT(handle_root_events()) );
     fRootTimer->start( 100 );
+    //set dimensions of stats box (~legend) in hists
     gStyle->SetStatW(0.25);
     gStyle->SetStatH(0.5);
+    //make histo title larger
+    gStyle->SetTitleFontSize(0.1);
 }
 //______________________________________________________________________________
 void QMainCanvas::handle_root_events()

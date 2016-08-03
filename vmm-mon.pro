@@ -29,13 +29,15 @@ SOURCES += main.cpp\
     canvas.cxx \
     qsocketclient.cpp \
     chamber.cpp \
-    chip.cpp
+    chip.cpp \
+    datahandler.cpp
 
 HEADERS  += mainwindow.h \
     monitoringserver.h \
     canvas.h \
     qsocketclient.h \
     chamber.h \
-    chip.h
+    chip.h \
+    datahandler.h
 
 FORMS    += mainwindow.ui

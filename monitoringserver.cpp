@@ -32,11 +32,11 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
     //this name should be used when creating the server
     //in the DAQ side
 
-    QTimer *ttimer = new QTimer();
-    ttimer->setSingleShot(true);
-    connect(ttimer,SIGNAL(timeout()),this,SLOT(startClient()));
-    ttimer->start(1000);
-    //    client = new QSocketClient(10);
+//    QTimer *ttimer = new QTimer();
+//    ttimer->setSingleShot(true);
+//    connect(ttimer,SIGNAL(timeout()),this,SLOT(startClient()));
+//    ttimer->start(1);
+        client = new QSocketClient(1, chambers);
 
     ///and TEST Fill!
     if(false)
@@ -50,11 +50,11 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
     }
 
 }
-void MonitoringServer::startClient()
-{
-    client = new QSocketClient(10);
+//void MonitoringServer::startClient()
+//{
+//    client = new QSocketClient(10);
 
-}
+//}
 
 void MonitoringServer::configure()
 {
@@ -141,6 +141,12 @@ void MonitoringServer::makeCanvases()
 
 
 }
+void MonitoringServer::calculate_canvas_dimensions()
+{
+    //the canvas will have a line for every chip
+    canvas_size_in_y = noOfChips;
+    canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+}
 ///FILL TEST method - Nothing operational
 void MonitoringServer::FillTest()
 {
@@ -177,10 +183,4 @@ void MonitoringServer::UpdatePads()
 void MonitoringServer::UpdatePad(int pad)
 {
     c_chipStatistics->ModAndUpd_Pads(pad);
-}
-void MonitoringServer::calculate_canvas_dimensions()
-{
-    //the canvas will have a line for every chip
-    canvas_size_in_y = noOfChips;
-    canvas_size_in_x = Chip::getNoOfStatisticsHistos();
 }
