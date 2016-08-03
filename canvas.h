@@ -43,6 +43,7 @@ public slots:
    void clicked1();
    void handle_root_events();
    void ModAndUpd();
+   void ModAndUpd_Pads(int);
    void Divide(int,int);
    void cd(int);
 

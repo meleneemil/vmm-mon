@@ -33,32 +33,11 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
     //and Fill!
 
     //let's test it
-
-    for(int iter=0;iter<10000;iter++)
-    {
-
-        for(int i=0;i<chambers.size();i++)
-        {
-            Chamber *temp_chamber = chambers.at(i);
-            std::vector<Chip*> temp_chips = temp_chamber->getChips();
-
-            for(int j=0;j<temp_chips.size();j++)
-            {
-                Chip *tempChip = temp_chips.at(j);
-
-                tempChip->getH_channel_statistics()->Fill(rand()%63);
-                tempChip->getH_pdo_statistics()->Fill(rand()%500);
-                tempChip->getH_tdo_statistics()->Fill(rand()%500);
-                tempChip->getH_bcid_statistics()->Fill(rand()%4096);
-            }
-        }
-
-
-        if(iter%100==0)
-            c_chipStatistics->ModAndUpd();
-    }
-
-
+    fill_counter=0;
+    qDebug() << "FILL-TEST";
+    timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), this, SLOT(FillTest()));
+    timer->start(1);
 
 
     /*
@@ -167,4 +146,44 @@ void MonitoringServer::calculate_canvas_dimensions()
     //the canvas will have a line for every chip
     canvas_size_in_y = noOfChips;
     canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+}
+
+void MonitoringServer::FillTest()
+{
+    //    qDebug() << "Filling";
+    for(int i=0;i<chambers.size();i++)
+    {
+        Chamber *temp_chamber = chambers.at(i);
+        std::vector<Chip*> temp_chips = temp_chamber->getChips();
+
+        for(int j=0;j<temp_chips.size();j++)
+        {
+            Chip *tempChip = temp_chips.at(j);
+            for(int k=0;k<10;k++)
+            {
+                tempChip->getH_channel_statistics()->Fill(rand()%63);
+                tempChip->getH_pdo_statistics()->Fill(rand()%500);
+                tempChip->getH_tdo_statistics()->Fill(rand()%500);
+                tempChip->getH_bcid_statistics()->Fill(rand()%4096);
+            }
+        }
+    }
+
+    fill_counter++;
+
+    //REFILL RATE = #fills together X fill-cycles per PadUpdate call
+    //here, if the above loop is for k<10
+    //and we UpdatePads if fill_counter%100=0
+    //then in the GUI, you will have ~1kHz
+    if(fill_counter%100==0) //this makes a difference on the refill rate
+        UpdatePads();
+}
+
+void MonitoringServer::UpdatePads()
+{
+    c_chipStatistics->ModAndUpd_Pads(canvas_size_in_x*canvas_size_in_y);
+}
+void MonitoringServer::UpdatePad(int pad)
+{
+    c_chipStatistics->ModAndUpd_Pads(pad);
 }

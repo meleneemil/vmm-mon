@@ -2,6 +2,7 @@
 #define MONITORINGSERVER_H
 #include <vector>
 #include <QWidget>
+#include <QTimer>
 #include "canvas.h"
 #include "chamber.h"
 #include "chip.h"
@@ -24,10 +25,18 @@ private:
     int noOfChips=0;
     int canvas_size_in_x;
     int canvas_size_in_y;
+    QTimer *timer;
+    QTimer *timer_update;
+    std::vector<QTimer*> timer_vector;
+    int fill_counter;
 
     void configure();
     void makeCanvases();
     void calculate_canvas_dimensions();
+private slots:
+    void FillTest();
+    void UpdatePads();
+    void UpdatePad(int);
 
 
 signals:

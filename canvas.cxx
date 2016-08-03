@@ -203,6 +203,16 @@ void QMainCanvas::ModAndUpd()
     canvas->getCanvas()->Update();
 }
 
+void QMainCanvas::ModAndUpd_Pads(int pads)
+{
+    for(int i=1;i<=pads;i++)
+    {
+        canvas->getCanvas()->cd(i);//pads or i
+        gPad->Modified();
+        gPad->Update();
+    }
+}
+
 void QMainCanvas::Divide(int x,int y)
 {
     canvas->getCanvas()->Divide(x,y);
@@ -212,3 +222,4 @@ void QMainCanvas::cd(int x)
 {
     canvas->getCanvas()->cd(x);
 }
+
