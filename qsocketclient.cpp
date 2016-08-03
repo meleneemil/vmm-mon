@@ -2,7 +2,11 @@
 
 QSocketClient::QSocketClient(int new_request_timeout)
 {
+
+
     socket = new QLocalSocket();
+
+//handler = new Data
 
     //when socket is ready to read, call readSocket()
     connect(socket, SIGNAL(readyRead()), this, SLOT(readSocket()));
@@ -27,43 +31,47 @@ void QSocketClient::connectToServer()
     blockSize = 0;
     socket->abort();
     socket->connectToServer("vmm-mon-server");
+//    qDebug() << "CONNECTED";
 }
 
 void QSocketClient::readSocket()
 {
-    if(request_timeout>10)
-        request_timeout=1;
+    //this code is directly from the Qt example = Fortune Client
+        QDataStream in(socket);
+        in.setVersion(QDataStream::Qt_4_0);
 
-    QDataStream in(socket);
-    in.setVersion(QDataStream::Qt_4_0);
+        if (blockSize == 0) {
+            if (socket->bytesAvailable() < (int)sizeof(quint16))
+            {
+                qDebug() << "no bytes available";
+                return;
+            }
+            in >> blockSize;
+        }
 
-    if (blockSize == 0) {
-        if (socket->bytesAvailable() < (int)sizeof(quint16))
-        {
-            qDebug() << "no bytes available";
+        if (in.atEnd())
+            return;
+
+        QString nextRead;
+        in >> nextRead;
+
+        if (nextRead == currentRead) {
+            QTimer::singleShot(0, this, SLOT(connectToServer()));
             return;
         }
-        in >> blockSize;
-    }
-
-    if (in.atEnd())
-        return;
-
-    QString nextRead;
-    in >> nextRead;
-
-    if (nextRead == currentRead) {
-        QTimer::singleShot(0, this, SLOT(connectToServer()));
-        return;
-    }
 
     qDebug() << nextRead;
-//    std::vector<QString> eventVector;
+    //    std::vector<QString> eventVector;
     //IMPORTANT TODO: edit to accomodate for multi hit events...
     //this now assumes that each packet tha comes is an event.
-//    eventVector.push_back(nextFortune);
-//    emit fillHistograms(eventVector,eventCounter);
-//    emit drawHistograms();
+    //    eventVector.push_back(nextFortune);
+    //    emit fillHistograms(eventVector,eventCounter);
+    //    emit drawHistograms();
+}
+
+void QSocketClient::sendDataToHandler()
+{
+
 }
 
 void QSocketClient::startRequests()
@@ -81,7 +89,7 @@ void QSocketClient::displayError(QLocalSocket::LocalSocketError socketError)
     //if socket could not connect, and gives error
     //then stop requests
 
-    stopRequests();
+//    stopRequests();
 
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
@@ -89,6 +97,7 @@ void QSocketClient::displayError(QLocalSocket::LocalSocketError socketError)
         break;
     case QLocalSocket::ConnectionRefusedError:
         qDebug() << "The connection was refused by the peer. Make sure the fortune server is running, and check that the host name and port settings are correct.";
+        qDebug() << "RESTART MONITORING.";
         break;
     case QLocalSocket::PeerClosedError:
         break;

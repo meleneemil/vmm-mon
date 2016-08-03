@@ -5,40 +5,41 @@
 
 MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
 {
-    qDebug() << "[MonitoringServer] New mon-server";
+//    qDebug() << "[MonitoringServer] New mon-server";
 
     //first we make the qsocketclient, to read from the socket
     //(later we can make a version to work directly on the vmm2dcs
 
-    /**
-      1) Configuration
-      2) Create histos
-      3) create canvases, and draw
-      4) their frames should be ready
-      5) show them.
-      ...hmmm
-      */
-
     //read config file
-    qDebug() << "[configure]";
+//    qDebug() << "[configure]";
     configure();
     //calculate how many chip histos
     //and how many chambers, to Divide the
     //canvas properly
-    qDebug() << "[calculate_canvas_dimensions]";
+//    qDebug() << "[calculate_canvas_dimensions]";
     calculate_canvas_dimensions();
     //create the canvases, and of course,
     //Draw the histograms
-    qDebug() << "[makeCanvases]";
+//    qDebug() << "[makeCanvases]";
     makeCanvases();
 
     //now we are ready to read from shm/socket
     //so, create the QSocket client.
     //This immediately starts looking for the server
     //set timeout to 1ms
-    client = new QSocketClient(1);
+
+    //server name = "vmm-mon-server" is hardcoded
+    //this name should be used when creating the server
+    //in the DAQ side
+
+    QTimer *ttimer = new QTimer();
+    ttimer->setSingleShot(true);
+    connect(ttimer,SIGNAL(timeout()),this,SLOT(startClient()));
+    ttimer->start(1000);
+    //    client = new QSocketClient(10);
 
     ///and TEST Fill!
+    if(false)
     {
         //let's test it
         fill_counter=0;
@@ -47,6 +48,11 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
         connect(timer, SIGNAL(timeout()), this, SLOT(FillTest()));
         timer->start(1);
     }
+
+}
+void MonitoringServer::startClient()
+{
+    client = new QSocketClient(10);
 
 }
 
@@ -84,7 +90,7 @@ void MonitoringServer::configure()
 
         }
         inputFile.close();
-        qDebug() << "[MonitoringServer] Configuration done.";
+//        qDebug() << "[MonitoringServer] Configuration done.";
     }
     else
         qDebug() << "Could not open config file.";
@@ -135,7 +141,7 @@ void MonitoringServer::makeCanvases()
 
 
 }
-///FILL TEST method
+///FILL TEST method - Nothing operational
 void MonitoringServer::FillTest()
 {
     //    qDebug() << "Filling";

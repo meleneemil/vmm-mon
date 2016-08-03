@@ -26,6 +26,7 @@ private slots:
     void stopRequests();
     void displayError(QLocalSocket::LocalSocketError socketError);
     void readSocket();
+    void sendDataToHandler();
 
 };
 

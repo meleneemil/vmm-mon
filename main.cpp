@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-    qDebug() << "[MAIN] Test vmm-mon";
+//    qDebug() << "[MAIN] Test vmm-mon";
 
     TApplication rootapp("mmDaq Online Monitoring", &argc, argv);
     rootapp.SetReturnFromRun(true);
