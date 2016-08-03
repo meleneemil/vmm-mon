@@ -94,7 +94,6 @@ void QSocketClient::displayError(QLocalSocket::LocalSocketError socketError)
     //if socket could not connect, and gives error
     //then stop requests
 
-    //    stopRequests();
 
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
@@ -103,6 +102,7 @@ void QSocketClient::displayError(QLocalSocket::LocalSocketError socketError)
     case QLocalSocket::ConnectionRefusedError:
         qDebug() << "The connection was refused by the peer. Make sure the fortune server is running, and check that the host name and port settings are correct.";
         qDebug() << "RESTART MONITORING.";
+        stopRequests();
         break;
     case QLocalSocket::PeerClosedError:
         break;

@@ -20,9 +20,7 @@ public:
     explicit MonitoringServer(QWidget *parent = 0);
 
 private:
-    QTimer* fRootTimer;
-    QMainCanvas* testCanvas;
-    TH1F* myhist;
+    QTimer *timer;
     std::vector<Chamber*> chambers;
     std::vector<std::vector<QString>> chips;
     QMainCanvas *c_chipStatistics;
@@ -30,9 +28,6 @@ private:
     int noOfChips=0;
     int canvas_size_in_x;
     int canvas_size_in_y;
-    QTimer *timer;
-    QTimer *timer_update;
-    std::vector<QTimer*> timer_vector;
     int fill_counter;
     QSocketClient *client;
 
@@ -43,12 +38,7 @@ private slots:
     void FillTest();
     void UpdatePads();
     void UpdatePad(int);
-//    void startClient();
 
-
-signals:
-
-public slots:
 };
 
 #endif // MONITORINGSERVER_H
