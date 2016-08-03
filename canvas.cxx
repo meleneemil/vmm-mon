@@ -141,12 +141,13 @@ QMainCanvas::QMainCanvas(QWidget *parent) : QWidget(parent)
     //root engine to process the events.
     fRootTimer = new QTimer( this );
     QObject::connect( fRootTimer, SIGNAL(timeout()), this, SLOT(handle_root_events()) );
-    fRootTimer->start( 100 );
+    fRootTimer->start( 20 );
     //set dimensions of stats box (~legend) in hists
     gStyle->SetStatW(0.25);
     gStyle->SetStatH(0.5);
     //make histo title larger
-    gStyle->SetTitleFontSize(0.1);
+//    gStyle->SetTitleFontSize(0.1);
+//    gStyle->SetLabelSize(0.9);
 }
 //______________________________________________________________________________
 void QMainCanvas::handle_root_events()
@@ -177,12 +178,12 @@ void QMainCanvas::ModAndUpd()
     canvas->getCanvas()->Update();
 }
 
-void QMainCanvas::ModAndUpd_Pads(int pads)
+void QMainCanvas::ModAndUpd_Pads()
 {
     //This method calls Mod and Upd
     //For each pad on the canvas.
     ///To be used only for canvases that have been Divide'd
-    for(int i=1;i<=pads;i++)
+    for(int i=1;i<=noOfPads;i++)
     {
         canvas->getCanvas()->cd(i);//pads or i
         gPad->Modified();
@@ -194,6 +195,7 @@ void QMainCanvas::ModAndUpd_Pads(int pads)
 void QMainCanvas::Divide(int x,int y)
 {
     canvas->getCanvas()->Divide(x,y);
+    noOfPads=x*y;
 }
 
 void QMainCanvas::cd(int x)

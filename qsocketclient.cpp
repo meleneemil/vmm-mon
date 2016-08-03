@@ -2,13 +2,16 @@
 
 QSocketClient::QSocketClient(
         int new_request_timeout,
-        std::vector<Chamber*> chambers)
+        std::vector<Chamber*> chambers,
+        std::vector<Chip*> chips,
+        QMainCanvas* c_chipStatistics
+        )
 {
     noOfSuccessfulRequests=0;
 
     socket = new QLocalSocket();
 
-    handler = new DataHandler(chambers);
+    handler = new DataHandler(chambers,chips,c_chipStatistics);
 
     //when socket is ready to read, call readSocket()
     connect(socket, SIGNAL(readyRead()), this, SLOT(readSocket()));
@@ -78,7 +81,16 @@ void QSocketClient::readSocket()
 
 void QSocketClient::sendDataToHandler(QString data)
 {
-    handler->writeData(data);
+    //here we can choose the method.
+    //this means, we can choose between the implemented
+    //formats and
+    //fill strategies
+
+    //the simple one: OLD format, Standard Strategy
+    handler->writeDataSimple(data);
+
+    //faster!!! : OLD Format, smart strategy
+//    handler->saveDataSendLater(data);
 }
 
 void QSocketClient::startRequests()

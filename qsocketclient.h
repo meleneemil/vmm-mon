@@ -7,6 +7,7 @@
 
 #include "datahandler.h"
 #include "chamber.h"
+#include "canvas.h"
 
 class QSocketClient : public QObject
 {
@@ -14,7 +15,9 @@ class QSocketClient : public QObject
 
 public:
     QSocketClient(int,
-                  std::vector<Chamber*>
+                  std::vector<Chamber*>,
+                  std::vector<Chip*>,
+                  QMainCanvas*
                   );
 
 

@@ -22,7 +22,7 @@ public:
 private:
     QTimer *timer;
     std::vector<Chamber*> chambers;
-    std::vector<std::vector<QString>> chips;
+    std::vector<Chip*> chips;
     QMainCanvas *c_chipStatistics;
     int noOfChambers=0;
     int noOfChips=0;
@@ -37,7 +37,6 @@ private:
 private slots:
     void FillTest();
     void UpdatePads();
-    void UpdatePad(int);
 
 };
 

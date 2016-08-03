@@ -42,13 +42,14 @@ public:
 public slots:
    void handle_root_events();
    void ModAndUpd();
-   void ModAndUpd_Pads(int);
+   void ModAndUpd_Pads();
    void Divide(int,int);
    void cd(int);
 
 protected:
    QRootCanvas    *canvas;
    QTimer         *fRootTimer;
+   int noOfPads;
 };
 
 #endif

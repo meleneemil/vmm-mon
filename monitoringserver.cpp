@@ -36,7 +36,7 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
 //    ttimer->setSingleShot(true);
 //    connect(ttimer,SIGNAL(timeout()),this,SLOT(startClient()));
 //    ttimer->start(1);
-        client = new QSocketClient(1, chambers);
+    client = new QSocketClient(1, chambers,chips, c_chipStatistics);
 
     ///and TEST Fill!
     if(false)
@@ -82,7 +82,10 @@ void MonitoringServer::configure()
             //each next item is a chip of that chamber
             for(int i=1;i<list.size();i++)
             {//start from 1, because 0 was the chamber name
-                tempchamber->addChip(list.at(i));
+
+                Chip* c = new Chip(list.at(i));
+                tempchamber->addChip(c);
+                chips.push_back(c);
                 noOfChips++;
             }
             noOfChambers++;
@@ -90,6 +93,12 @@ void MonitoringServer::configure()
 
         }
         inputFile.close();
+
+
+
+
+
+
 //        qDebug() << "[MonitoringServer] Configuration done.";
     }
     else
@@ -178,9 +187,5 @@ void MonitoringServer::FillTest()
 ///**** CANVAS specific methods:
 void MonitoringServer::UpdatePads()
 {
-    c_chipStatistics->ModAndUpd_Pads(canvas_size_in_x*canvas_size_in_y);
-}
-void MonitoringServer::UpdatePad(int pad)
-{
-    c_chipStatistics->ModAndUpd_Pads(pad);
+    c_chipStatistics->ModAndUpd_Pads();
 }
