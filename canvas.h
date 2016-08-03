@@ -40,7 +40,6 @@ public:
    virtual void changeEvent(QEvent * e);
 
 public slots:
-   void clicked1();
    void handle_root_events();
    void ModAndUpd();
    void ModAndUpd_Pads(int);
@@ -49,7 +48,6 @@ public slots:
 
 protected:
    QRootCanvas    *canvas;
-   QPushButton    *b;
    QTimer         *fRootTimer;
 };
 

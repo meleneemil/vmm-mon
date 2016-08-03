@@ -7,10 +7,10 @@
 
 class QSocketClient : public QObject
 {
-//    Q_OBJECT
+    Q_OBJECT
 
 public:
-    QSocketClient();
+    QSocketClient(int);
 
 
 private:
@@ -18,6 +18,7 @@ private:
     QLocalSocket *socket;
     quint16 blockSize;
     QString currentRead;
+    int request_timeout;
 
 private slots:
     void connectToServer();

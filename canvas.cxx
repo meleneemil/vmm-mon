@@ -1,4 +1,3 @@
-#include <QPushButton>
 #include <QLayout>
 #include <QTimer>
 #include <QPaintEvent>
@@ -11,14 +10,13 @@
 #include <TCanvas.h>
 #include <TVirtualX.h>
 #include <TSystem.h>
+#include <TStyle.h>
 #include <TFormula.h>
 #include <TF1.h>
 #include <TH1.h>
 #include <TFrame.h>
 #include <TTimer.h>
 #include "canvas.h"
-
-//------------------------------------------------------------------------------
 
 //______________________________________________________________________________
 QRootCanvas::QRootCanvas(QWidget *parent) : QWidget(parent, 0), fCanvas(0)
@@ -134,52 +132,20 @@ void QRootCanvas::paintEvent( QPaintEvent * )
 //______________________________________________________________________________
 QMainCanvas::QMainCanvas(QWidget *parent) : QWidget(parent)
 {
-    // QMainCanvas constructor.
-
     QVBoxLayout *l = new QVBoxLayout(this);
     l->addWidget(canvas = new QRootCanvas(this));
-//    l->addWidget(b = new QPushButton("&Draw Histogram", this));
-//    connect(b, SIGNAL(clicked()), this, SLOT(clicked1()));
     fRootTimer = new QTimer( this );
     QObject::connect( fRootTimer, SIGNAL(timeout()), this, SLOT(handle_root_events()) );
-    fRootTimer->start( 20 );
+    fRootTimer->start( 100 );
+    gStyle->SetStatW(0.25);
+    gStyle->SetStatH(0.5);
 }
-
-//______________________________________________________________________________
-void QMainCanvas::clicked1()
-{
-    // Handle the "Draw Histogram" button clicked() event.
-/*
-    static TH1F *h1f = 0;
-    new TFormula("form1","abs(sin(x)/x)");
-    TF1 *sqroot = new TF1("sqroot","x*gaus(0) + [3]*form1", 0, 10);
-    sqroot->SetParameters(10, 4, 1, 20);
-
-    // Create a one dimensional histogram (one float per bin)
-    // and fill it following the distribution in function sqroot.
-    canvas->getCanvas()->Clear();
-    canvas->getCanvas()->cd();
-    canvas->getCanvas()->SetBorderMode(0);
-    canvas->getCanvas()->SetFillColor(0);
-    canvas->getCanvas()->SetGrid();
-    if (h1f) delete h1f;
-    h1f = new TH1F("h1f","Test random numbers", 200, 0, 10);
-    h1f->SetFillColor(kViolet + 2);
-    h1f->SetFillStyle(3001);
-    h1f->FillRandom("sqroot", 10000);
-    h1f->Draw();
-    canvas->getCanvas()->Modified();
-    canvas->getCanvas()->Update();
-    */
-}
-
 //______________________________________________________________________________
 void QMainCanvas::handle_root_events()
 {
     //call the inner loop of ROOT
     gSystem->ProcessEvents();
 }
-
 //______________________________________________________________________________
 void QMainCanvas::changeEvent(QEvent * e)
 {
@@ -196,7 +162,7 @@ void QMainCanvas::changeEvent(QEvent * e)
         }
     }
 }
-
+//______________________________________________________________________________
 void QMainCanvas::ModAndUpd()
 {
     canvas->getCanvas()->Modified();
@@ -205,11 +171,15 @@ void QMainCanvas::ModAndUpd()
 
 void QMainCanvas::ModAndUpd_Pads(int pads)
 {
+    //This method calls Mod and Upd
+    //For each pad on the canvas.
+    ///To be used only for canvases that have been Divide'd
     for(int i=1;i<=pads;i++)
     {
         canvas->getCanvas()->cd(i);//pads or i
         gPad->Modified();
         gPad->Update();
+
     }
 }
 
@@ -222,4 +192,3 @@ void QMainCanvas::cd(int x)
 {
     canvas->getCanvas()->cd(x);
 }
-

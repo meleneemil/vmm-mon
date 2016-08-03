@@ -1,12 +1,17 @@
 #ifndef MONITORINGSERVER_H
 #define MONITORINGSERVER_H
+//C includes
 #include <vector>
+//QT includes
 #include <QWidget>
 #include <QTimer>
+//ROOT includes
+#include <TH1.h>
+//"local" includes
 #include "canvas.h"
 #include "chamber.h"
+#include "qsocketclient.h"
 #include "chip.h"
-#include <TH1.h>
 
 class MonitoringServer : public QWidget
 {
@@ -29,6 +34,7 @@ private:
     QTimer *timer_update;
     std::vector<QTimer*> timer_vector;
     int fill_counter;
+    QSocketClient *client;
 
     void configure();
     void makeCanvases();
