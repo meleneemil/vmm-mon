@@ -119,7 +119,7 @@ void DataHandler::saveDataSendLater(QString data)
 
 
     //And we will fill+ModAndUpd every 10 received fuking packets
-    if(s_chips.size()==3)
+    if(s_chips.size()==50)
     {
         for(int i=0;i<s_chips.size();i++)
         {
@@ -139,7 +139,9 @@ void DataHandler::saveDataSendLater(QString data)
 
         //perhaps this will not be optimal yet
         //=>having the ModAndUpd every 10fills...to be seen
-//        if(fill_counter%100==0)
+        if(fill_counter<100)
+            c_chipStatistics->ModAndUpd_Pads();
+        else if(fill_counter%100==0)
             c_chipStatistics->ModAndUpd_Pads();
     }
 

@@ -27,8 +27,15 @@ QSocketClient::QSocketClient(
     //if socket fails, then we stop.
     //USER must restart
     request_timeout = new_request_timeout;
+    QLocalServer *qs = new QLocalServer();
+    if(qs->listen("vmm-mon-server"))
+    {
+        QLocalServer::removeServer("vmm-mon-server");
+        qDebug() << "Server does not exist. Restart program.";
+    }
+    else
+        startRequests();
 
-    startRequests();
 }
 
 void QSocketClient::connectToServer()
@@ -87,10 +94,10 @@ void QSocketClient::sendDataToHandler(QString data)
     //fill strategies
 
     //the simple one: OLD format, Standard Strategy
-    handler->writeDataSimple(data);
+//    handler->writeDataSimple(data);
 
     //faster!!! : OLD Format, smart strategy
-//    handler->saveDataSendLater(data);
+    handler->saveDataSendLater(data);
 }
 
 void QSocketClient::startRequests()
@@ -103,9 +110,6 @@ void QSocketClient::stopRequests()
 }
 void QSocketClient::displayError(QLocalSocket::LocalSocketError socketError)
 {
-    //if socket could not connect, and gives error
-    //then stop requests
-
 
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:

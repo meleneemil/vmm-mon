@@ -2,6 +2,7 @@
 #define QSOCKETCLIENT_H
 
 #include <QLocalSocket>
+#include <QLocalServer>
 #include <QTimer>
 #include <QDataStream>
 
