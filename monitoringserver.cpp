@@ -32,10 +32,10 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
     //this name should be used when creating the server
     //in the DAQ side
 
-    //    QTimer *ttimer = new QTimer();
-    //    ttimer->setSingleShot(true);
-    //    connect(ttimer,SIGNAL(timeout()),this,SLOT(startClient()));
-    //    ttimer->start(1);
+    update_timer= new QTimer();
+    connect(update_timer,SIGNAL(timeout()),this,SLOT(UpdatePads()));
+    update_timer->start(500);
+
     //client = new QSocketClient(5, chambers,chips, c_chipStatistics);
 
     ///and TEST Fill!
@@ -44,10 +44,26 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
         //let's test it
         fill_counter=0;
         qDebug() << "FILL-TEST";
-        timer = new QTimer();
-        connect(timer, SIGNAL(timeout()), this, SLOT(FillTest()));
-        timer->start(1);
+        timer1 = new QTimer();
+        timer2 = new QTimer();
+        timer3 = new QTimer();
+        timer4 = new QTimer();
+        connect(timer1, SIGNAL(timeout()), this, SLOT(FillTest1()));
+        connect(timer2, SIGNAL(timeout()), this, SLOT(FillTest2()));
+        connect(timer3, SIGNAL(timeout()), this, SLOT(FillTest3()));
+        connect(timer4, SIGNAL(timeout()), this, SLOT(FillTest4()));
+        timer1->start(1);
+        timer2->start(1);
+        timer3->start(1);
+        timer4->start(1);
     }
+
+
+    ///here we create a 1sec timer to print the rate
+    rate_timer=new QTimer();
+    connect(rate_timer,SIGNAL(timeout()),this,SLOT(printRate()));
+    rate_timer->start(rate_interval);//
+    ///****************************************************
 
 }
 //void MonitoringServer::startClient()
@@ -157,37 +173,75 @@ void MonitoringServer::calculate_canvas_dimensions()
     canvas_size_in_x = Chip::getNoOfStatisticsHistos();
 }
 ///FILL TEST method - Nothing operational
-void MonitoringServer::FillTest()
-{
-    //    qDebug() << "Filling";
-    //    for(int i=0;i<chambers.size();i++)
-    //    {
-    //        Chamber *temp_chamber = chambers.at(i);
-    //        std::vector<Chip*> temp_chips = temp_chamber->getChips();
 
-    //        for(int j=0;j<temp_chips.size();j++)
-    //        {
+void MonitoringServer::FillTest1()
+{
     for(Chip *tempChip: chips)
     {
-        for(int k=0;k<1;k++)//#fills per cycle is proportional
-        {//to actual refill rate on GUI
+        for(int k=0;k<1;k++)
+        {
             tempChip->getH_channel_statistics()->Fill(rand()%63);
-            tempChip->getH_pdo_statistics()->Fill(rand()%500);
-            tempChip->getH_tdo_statistics()->Fill(rand()%500);
-            tempChip->getH_bcid_statistics()->Fill(rand()%4096);
-            fill_counter++;
+            //            tempChip->getH_pdo_statistics()->Fill(rand()%500);
+            //            tempChip->getH_tdo_statistics()->Fill(rand()%500);
+            //            tempChip->getH_bcid_statistics()->Fill(rand()%4096);
         }
     }
-    //        }
-    //    }
-
-
-    //this makes a difference on the refill rate
-    if(fill_counter%100==0)
-        UpdatePads();
+    fill_counter++;
 }
+
+void MonitoringServer::FillTest2()
+{
+    for(Chip *tempChip: chips)
+    {
+        for(int k=0;k<1;k++)
+        {
+            //            tempChip->getH_channel_statistics()->Fill(rand()%63);
+            tempChip->getH_pdo_statistics()->Fill(rand()%500);
+            //            tempChip->getH_tdo_statistics()->Fill(rand()%500);
+            //            tempChip->getH_bcid_statistics()->Fill(rand()%4096);
+        }
+    }
+}
+
+void MonitoringServer::FillTest3()
+{
+    for(Chip *tempChip: chips)
+    {
+        for(int k=0;k<1;k++)
+        {
+            //            tempChip->getH_channel_statistics()->Fill(rand()%63);
+            //            tempChip->getH_pdo_statistics()->Fill(rand()%500);
+            tempChip->getH_tdo_statistics()->Fill(rand()%500);
+            //            tempChip->getH_bcid_statistics()->Fill(rand()%4096);
+        }
+    }
+}
+
+void MonitoringServer::FillTest4()
+{
+    for(Chip *tempChip: chips)
+    {
+        for(int k=0;k<1;k++)
+        {
+            //            tempChip->getH_channel_statistics()->Fill(rand()%63);
+            //            tempChip->getH_pdo_statistics()->Fill(rand()%500);
+            //            tempChip->getH_tdo_statistics()->Fill(rand()%500);
+            tempChip->getH_bcid_statistics()->Fill(rand()%4096);
+        }
+    }
+}
+
+
+
 ///**** CANVAS specific methods:
 void MonitoringServer::UpdatePads()
 {
     c_chipStatistics->ModAndUpd_Pads();
+}
+
+void MonitoringServer::printRate()
+{
+
+    qDebug()<< "Rate [kHz]= "<< (fill_counter-fill_counter_1sec_ago)/((double)rate_interval);
+    fill_counter_1sec_ago = fill_counter;
 }

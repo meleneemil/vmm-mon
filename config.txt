@@ -4,6 +4,6 @@
 
 #Tmm2 Vmm1.0 Vmm2.0 Vmm3.0 Vmm4.0
 #TLP1 Vmm5.0
-#TLP2 Vmm6.0
+TLP2 Vmm6.0
 TZP Vmm7.0
 
