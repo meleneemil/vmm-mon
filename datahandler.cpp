@@ -33,52 +33,34 @@ Option 1) Do it normally. Whatever we receive, we fill.
 Option 2) This is for optimizing for high rates.
           We can save the data and Fill every 10 hits for example.
 
-
 */
 
-    //here we do FORMAT Option 1
+    ///here we do FORMAT Option 2
     //with fill strategy 1
-
-    int strip;
-    int pdo;
-    int tdo;
-    int bcid;
-    QString chip;
 
     QStringList list = data.split(" ");
 
-    //old format
-    //chip  = list.at(3);
-    //strip = list.at(5).toInt();
-    //pdo   = list.at(9).toInt();
-    //tdo   = list.at(10).toInt();
-    //bcid  = list.at(12).toInt();
     //old format, simplified
-    chip  = list.at(0);
-    strip = list.at(1).toInt();
-    pdo   = list.at(2).toInt();
-    tdo   = list.at(3).toInt();
-    bcid  = list.at(4).toInt();
 
-    fill(chip,strip,pdo,tdo,bcid);
+    //size must be a multiple of 5!!
+    for(int i=0;i<list.size();i+=5)
+    {
+        fill(list.at(i),
+             list.at(i+1).toInt(),
+             list.at(i+2).toInt(),
+             list.at(i+3).toInt(),
+             list.at(i+4).toInt()
+             );
+    }
     if(fill_counter%100==0)
         c_chipStatistics->ModAndUpd_Pads();
 }
 
 void DataHandler::fill(QString chip, int strip, int pdo,int tdo, int bcid)
 {
+    //    qDebug() << "Filling with: "<<chip<<" "<<strip<<" "<<pdo;
+
     fill_counter++;
-    //    qDebug() << chip << " " << strip<< " " << pdo<< " " << tdo;
-
-    //    int ind_chamber = findChamberFromChip(chip);
-
-    //    if(!ind_chamber==-1)//= if chip name found
-    //    {
-
-    //    }
-
-
-
     for(Chip* c: chips)
     {
         if(c->getName()==chip)
@@ -99,27 +81,23 @@ void DataHandler::fill(QString chip, int strip, int pdo,int tdo, int bcid)
 void DataHandler::saveDataSendLater(QString data)
 {
 
-    //here we do FORMAT Option 1
+    //here we do FORMAT Option 2
     //with fill strategy 2
 
     QStringList list = data.split(" ");
 
-    //old format
-//    s_chips.push_back( list.at(3));
-//    s_strip.push_back( list.at(5).toInt());
-//    s_pdo.push_back(   list.at(9).toInt());
-//    s_tdo.push_back(   list.at(10).toInt());
-//    s_bcid.push_back(  list.at(12).toInt());
     //old format, but simplified
-    s_chips.push_back( list.at(0));
-    s_strip.push_back( list.at(1).toInt());
-    s_pdo.push_back(   list.at(2).toInt());
-    s_tdo.push_back(   list.at(3).toInt());
-    s_bcid.push_back(  list.at(4).toInt());
-
-
+    //size must be a multiple of 5!!
+    for(int i=0;i<list.size();i+=5)
+    {
+        s_chips.push_back( list.at(i));
+        s_strip.push_back( list.at(i+1).toInt());
+        s_pdo.push_back(   list.at(i+2).toInt());
+        s_tdo.push_back(   list.at(i+3).toInt());
+        s_bcid.push_back(  list.at(i+4).toInt());
+    }
     //And we will fill+ModAndUpd every 10 received fuking packets
-    if(s_chips.size()==50)
+    if(s_chips.size()>300)
     {
         for(int i=0;i<s_chips.size();i++)
         {
@@ -141,7 +119,7 @@ void DataHandler::saveDataSendLater(QString data)
         //=>having the ModAndUpd every 10fills...to be seen
         if(fill_counter<100)
             c_chipStatistics->ModAndUpd_Pads();
-        else if(fill_counter%100==0)
+        else if(fill_counter%2000==0)
             c_chipStatistics->ModAndUpd_Pads();
     }
 

@@ -13,6 +13,7 @@ public:
     DataHandler(std::vector<Chamber*>,std::vector<Chip*>,QMainCanvas*);
     void writeDataSimple(QString);
     void fill(QString,int,int,int,int);
+//    void fill(QString,std::vector<int>,std::vector<int>,std::vector<int>,std::vector<int>);
     void saveDataSendLater(QString);
 
 private:

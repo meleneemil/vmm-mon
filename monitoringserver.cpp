@@ -36,10 +36,10 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
     //    ttimer->setSingleShot(true);
     //    connect(ttimer,SIGNAL(timeout()),this,SLOT(startClient()));
     //    ttimer->start(1);
-    //client = new QSocketClient(5, chambers,chips, c_chipStatistics);
+    client = new QSocketClient(1, chambers,chips, c_chipStatistics);
 
     ///and TEST Fill!
-    if(true)
+    if(false)
     {
         //let's test it
         fill_counter=0;
