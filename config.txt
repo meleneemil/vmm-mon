@@ -1,0 +1,10 @@
+#this is the config file for the vmm-mon software
+#lines like this are ignored
+#lines with size 1 or less are ignored
+
+Tmm2 Vmm1.0 Vmm2.0
+# Vmm3.0 Vmm4.0
+#TLP1 Vmm5.0
+#TLP2 Vmm6.0
+#TZP Vmm7.0
+
