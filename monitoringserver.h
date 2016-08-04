@@ -21,6 +21,7 @@ public:
 
 private:
     QTimer *timer;
+    QTimer *update_timer;
     std::vector<Chamber*> chambers;
     std::vector<Chip*> chips;
     QMainCanvas *c_chipStatistics;

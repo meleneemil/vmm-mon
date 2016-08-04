@@ -49,6 +49,10 @@ MonitoringServer::MonitoringServer(QWidget *parent) : QWidget(parent)
         timer->start(1);
     }
 
+    update_timer = new QTimer();
+    connect(update_timer, SIGNAL(timeout()), this, SLOT(UpdatePads()));
+    update_timer->start(1000);
+
 }
 //void MonitoringServer::startClient()
 //{

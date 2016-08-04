@@ -97,7 +97,7 @@ void DataHandler::saveDataSendLater(QString data)
         s_bcid.push_back(  list.at(i+4).toInt());
     }
     //And we will fill+ModAndUpd every 10 received fuking packets
-    if(s_chips.size()>300)
+    if(s_chips.size()>200)
     {
         for(int i=0;i<s_chips.size();i++)
         {
@@ -117,10 +117,10 @@ void DataHandler::saveDataSendLater(QString data)
 
         //perhaps this will not be optimal yet
         //=>having the ModAndUpd every 10fills...to be seen
-        if(fill_counter<100)
-            c_chipStatistics->ModAndUpd_Pads();
-        else if(fill_counter%2000==0)
-            c_chipStatistics->ModAndUpd_Pads();
+//        if(fill_counter<100)
+//            c_chipStatistics->ModAndUpd_Pads();
+//        else if(fill_counter%1000==0)
+//            c_chipStatistics->ModAndUpd_Pads();
     }
 
 
