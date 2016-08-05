@@ -19,7 +19,7 @@ public:
 private:
     std::vector<Chamber*> chambers;
     std::vector<Chip*> chips;
-    QMainCanvas* c_chipStatistics;
+    QMainCanvas* c_main;
 //    int findChamberFromChip(QString);
     int fill_counter;
 

@@ -1,11 +1,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+//C includes
+#include <vector>
+#include <iostream>
+//QT includes
+#include <QWidget>
+#include <QTimer>
 #include <QMainWindow>
 #include <QFile>
-#include "monitoringserver.h"
+//"local" includes
 #include "chamber.h"
 #include "chip.h"
+#include "qsocketclient.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,20 +29,30 @@ private:
     void configure();
     void calculate_canvas_dimensions();
     void makeCanvases();
-//    void on_b_startMonitoring_released();
+    void insertItem(QString);
+private slots:
+    void startCanvasUpdates();
+    void UpdatePads();
+    void start_random_fill();
+    void FillTest();
+    void treeSelectionChanged();
+
+    void on_b_clearTreeSelection_released();
 
 private:
     Ui::MainWindow *ui;
-    MonitoringServer mon;
 
-
+    QTimer *timer;
+    QTimer *update_timer;
     std::vector<Chamber*> chambers;
     std::vector<Chip*> chips;
     QMainCanvas *c_main;
+    QSocketClient *client;
     int noOfChambers=0;
     int noOfChips=0;
     int canvas_size_in_x;
     int canvas_size_in_y;
+    int fill_counter;
 };
 
 #endif // MAINWINDOW_H

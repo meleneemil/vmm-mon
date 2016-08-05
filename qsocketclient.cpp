@@ -1,17 +1,21 @@
 #include "qsocketclient.h"
 
+//server name = "vmm-mon-server" is hardcoded
+//this name should be used when creating the server
+//in the DAQ side
+
 QSocketClient::QSocketClient(
         int new_request_timeout,
         std::vector<Chamber*> chambers,
         std::vector<Chip*> chips,
-        QMainCanvas* c_chipStatistics
+        QMainCanvas* c_main
         )
 {
     noOfSuccessfulRequests=0;
 
     socket = new QLocalSocket();
 
-    handler = new DataHandler(chambers,chips,c_chipStatistics);
+    handler = new DataHandler(chambers,chips,c_main);
 
     //when socket is ready to read, call readSocket()
     connect(socket, SIGNAL(readyRead()), this, SLOT(readSocket()));
@@ -23,21 +27,44 @@ QSocketClient::QSocketClient(
     //Every *request_timeout*, call connectToServer()
     connect(socket_requests_timer, SIGNAL(timeout()), this, SLOT(connectToServer()));
 
+
+    request_timeout = new_request_timeout;
+}
+
+bool QSocketClient::start()
+{
     //Start with request_timeout of 1ms
     //if socket fails, then we stop.
     //USER must restart
-    request_timeout = new_request_timeout;
     QLocalServer *qs = new QLocalServer();
     if(qs->listen("vmm-mon-server"))
     {
         QLocalServer::removeServer("vmm-mon-server");
         qDebug() << "Server does not exist. Restart program.";
+        return false;
     }
     else
         startRequests();
+    return true;
 
 }
 
+
+bool QSocketClient::stop()
+{
+    stopRequests();
+    return true;
+}
+
+
+void QSocketClient::startRequests()
+{
+    socket_requests_timer->start(request_timeout);
+}
+void QSocketClient::stopRequests()
+{
+    socket_requests_timer->stop();
+}
 void QSocketClient::connectToServer()
 {
     blockSize = 0;
@@ -74,8 +101,8 @@ void QSocketClient::readSocket()
 
     //Purely DEBUGGING
     noOfSuccessfulRequests++;
-//    if(noOfSuccessfulRequests%1000==0)
-//        qDebug() << nextRead;
+    //    if(noOfSuccessfulRequests%1000==0)
+    //        qDebug() << nextRead;
 
     sendDataToHandler(nextRead);
     //    std::vector<QString> eventVector;
@@ -94,19 +121,10 @@ void QSocketClient::sendDataToHandler(QString data)
     //fill strategies
 
     //the simple one: OLD format, Standard Strategy
-//    handler->writeDataSimple(data);
+    //    handler->writeDataSimple(data);
 
     //faster!!! : OLD Format, smart strategy
     handler->saveDataSendLater(data);
-}
-
-void QSocketClient::startRequests()
-{
-    socket_requests_timer->start(request_timeout);
-}
-void QSocketClient::stopRequests()
-{
-    socket_requests_timer->stop();
 }
 void QSocketClient::displayError(QLocalSocket::LocalSocketError socketError)
 {

@@ -2,9 +2,6 @@
 #define MONITORINGSERVER_H
 //C includes
 #include <vector>
-//QT includes
-#include <QWidget>
-#include <QTimer>
 //ROOT includes
 #include <TH1.h>
 //"local" includes
@@ -19,22 +16,7 @@ class MonitoringServer : public QWidget
 public:
     explicit MonitoringServer(QWidget *parent = 0);
 
-private:
-    QTimer *timer;
-    QTimer *update_timer;
-    std::vector<Chamber*> chambers;
-    std::vector<Chip*> chips;
-    QMainCanvas *c_chipStatistics;
-    int noOfChambers=0;
-    int noOfChips=0;
-    int canvas_size_in_x;
-    int canvas_size_in_y;
-    int fill_counter;
-    QSocketClient *client;
 
-private slots:
-    void FillTest();
-    void UpdatePads();
 
 };
 

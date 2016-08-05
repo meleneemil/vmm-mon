@@ -21,6 +21,8 @@ public:
                   QMainCanvas*
                   );
 
+    bool start();
+    bool stop();
 
 private:
     QTimer* socket_requests_timer;

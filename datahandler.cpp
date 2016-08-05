@@ -2,12 +2,12 @@
 
 DataHandler::DataHandler(std::vector<Chamber*> _chambers,
                          std::vector<Chip*> _chips,
-                         QMainCanvas* _c_chipStatistics)
+                         QMainCanvas* _c_main)
 {
     fill_counter=0;
     chambers = _chambers;
     chips = _chips;
-    c_chipStatistics = _c_chipStatistics;
+    c_main = _c_main;
 }
 
 void DataHandler::writeDataSimple(QString data)
@@ -52,8 +52,8 @@ Option 2) This is for optimizing for high rates.
              list.at(i+4).toInt()
              );
     }
-    if(fill_counter%100==0)
-        c_chipStatistics->ModAndUpd_Pads();
+//    if(fill_counter%100==0)
+//        c_main->ModAndUpd_Pads();
 }
 
 void DataHandler::fill(QString chip, int strip, int pdo,int tdo, int bcid)
@@ -118,9 +118,9 @@ void DataHandler::saveDataSendLater(QString data)
         //perhaps this will not be optimal yet
         //=>having the ModAndUpd every 10fills...to be seen
 //        if(fill_counter<100)
-//            c_chipStatistics->ModAndUpd_Pads();
+//            c_main->ModAndUpd_Pads();
 //        else if(fill_counter%1000==0)
-//            c_chipStatistics->ModAndUpd_Pads();
+//            c_main->ModAndUpd_Pads();
     }
 
 
