@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>239</width>
-    <height>127</height>
+    <width>339</width>
+    <height>326</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,13 +30,23 @@
      <string>Start Monitoring</string>
     </property>
    </widget>
+   <widget class="QTreeView" name="setupTreeView">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>291</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>239</width>
+     <width>339</width>
      <height>20</height>
     </rect>
    </property>

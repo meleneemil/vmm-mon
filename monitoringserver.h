@@ -32,9 +32,6 @@ private:
     int fill_counter;
     QSocketClient *client;
 
-    void configure();
-    void makeCanvases();
-    void calculate_canvas_dimensions();
 private slots:
     void FillTest();
     void UpdatePads();

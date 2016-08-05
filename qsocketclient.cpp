@@ -74,8 +74,8 @@ void QSocketClient::readSocket()
 
     //Purely DEBUGGING
     noOfSuccessfulRequests++;
-    if(noOfSuccessfulRequests%1000==0)
-        qDebug() << nextRead;
+//    if(noOfSuccessfulRequests%1000==0)
+//        qDebug() << nextRead;
 
     sendDataToHandler(nextRead);
     //    std::vector<QString> eventVector;
