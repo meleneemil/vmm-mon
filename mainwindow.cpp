@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QDir>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -25,7 +25,13 @@ void MainWindow::configure()
 {
     //read file, and make the vectors (chambers+chips)
 
+#ifdef QT_DEBUG
+    qDebug() << "Running a debug build. Change a line code in mainwindow.cpp, if config file is not found.";
     QFile inputFile("/home/ak/GIT/vmm-mon/config.txt");
+#else
+    QFile inputFile("config.txt");
+#endif
+
     if (inputFile.open(QIODevice::ReadOnly))
     {
         QTextStream in(&inputFile);
@@ -55,7 +61,7 @@ void MainWindow::configure()
                 //pointer to its parent chamber
                 //its index in the parent, to merge vmms
                 Chip* c = new Chip(list.at(i),tempchamber,i-1);
-//                tempchamber->addChip(c);
+                //                tempchamber->addChip(c);
                 chips.push_back(c);
 
                 //make tree item children
