@@ -72,10 +72,10 @@ void DataHandler::fill(QString chip, int strip, int pdo,int tdo, int bcid)
             c->getH_bcid_statistics()->Fill(bcid);
 
             //also fill the parent of the chip
-            c->getParent->getH_channel_statistics()->Fill(strip+64*c->getIndex());
-            c->getParent->getH_pdo_statistics()->Fill(pdo);
-            c->getParent->getH_tdo_statistics()->Fill(tdo);
-            c->getParent->getH_bcid_statistics()->Fill(bcid);
+            c->getParent()->getH_channel_statistics()->Fill(strip+64*c->getIndex());
+            c->getParent()->getH_pdo_statistics()->Fill(pdo);
+            c->getParent()->getH_tdo_statistics()->Fill(tdo);
+            c->getParent()->getH_bcid_statistics()->Fill(bcid);
 
 
             //and break, since we do not need to search anymore

@@ -42,7 +42,7 @@ void MainWindow::configure()
             QStringList list = line.split(" ");
 
             //first item is the chamber name
-            Chamber *tempchamber = new Chamber(list.at(0));
+            Chamber *tempchamber = new Chamber(list.at(0),list.size()-1);
             QTreeWidgetItem *chamber_item=new QTreeWidgetItem((QTreeWidget*)0, QStringList(list.at(0)));
 
             //            insertItem(list.at(0));
@@ -55,7 +55,7 @@ void MainWindow::configure()
                 //pointer to its parent chamber
                 //its index in the parent, to merge vmms
                 Chip* c = new Chip(list.at(i),tempchamber,i-1);
-                tempchamber->addChip(c);
+//                tempchamber->addChip(c);
                 chips.push_back(c);
 
                 //make tree item children
@@ -111,32 +111,15 @@ void MainWindow::setupCanvas()
     //so, each item=line will have 4 histos (dual, with the eventDisplay)
     c_main->Divide(canvas_size_in_x,canvas_size_in_y);
 
-
-
-    int temp_cd=1;
-    for(uint i=0;i<chambers.size();i++)
-    {
-        Chamber *temp_chamber = chambers.at(i);
-        std::vector<Chip*> temp_chips = temp_chamber->getChips();
-
-        for(uint j=0;j<temp_chips.size();j++)
-        {
-            Chip *tempChip = temp_chips.at(j);
-
-            c_main->cd(temp_cd);
-            tempChip->drawChannelStatistics();
-            temp_cd++;
-            c_main->cd(temp_cd);
-            tempChip->drawPdoStatistics();
-            temp_cd++;
-            c_main->cd(temp_cd);
-            tempChip->drawTdoStatistics();
-            temp_cd++;
-            c_main->cd(temp_cd);
-            tempChip->drawBCIDStatistics();
-            temp_cd++;
-        }
+    if(ui->setupTreeWidget->selectedItems().size()==0)
+    {//list selection is empty
+        drawAllChips();
     }
+    else
+    {
+        drawSelectedItems();
+    }
+
 }
 
 void MainWindow::treeSelectionChanged()
@@ -181,6 +164,86 @@ void MainWindow::treeSelectionChanged()
 void MainWindow::on_b_clearTreeSelection_released()
 {
     ui->setupTreeWidget->clearSelection();
+}
+void MainWindow::drawAllChips()
+{
+
+    int temp_cd=1;
+    for(Chip *tempChip: chips)
+    {
+        c_main->cd(temp_cd);
+        tempChip->drawChannelStatistics();
+        temp_cd++;
+        c_main->cd(temp_cd);
+        tempChip->drawPdoStatistics();
+        temp_cd++;
+        c_main->cd(temp_cd);
+        tempChip->drawTdoStatistics();
+        temp_cd++;
+        c_main->cd(temp_cd);
+        tempChip->drawBCIDStatistics();
+        temp_cd++;
+    }
+}
+void MainWindow::drawSelectedItems()
+{
+    //selected items list
+    QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
+
+    int temp_cd=1;
+    for(QTreeWidgetItem *item: list)
+    {
+        Chamber *c = findChamber(item->text(0));
+        if(c)
+        {
+            c_main->cd(temp_cd);
+            c->drawChannelStatistics();
+            temp_cd++;
+            c_main->cd(temp_cd);
+            c->drawPdoStatistics();
+            temp_cd++;
+            c_main->cd(temp_cd);
+            c->drawTdoStatistics();
+            temp_cd++;
+            c_main->cd(temp_cd);
+            c->drawBCIDStatistics();
+            temp_cd++;
+        }
+        else
+        {
+            Chip *tempchip = findChip(item->text(0));
+
+            c_main->cd(temp_cd);
+            tempchip->drawChannelStatistics();
+            temp_cd++;
+            c_main->cd(temp_cd);
+            tempchip->drawPdoStatistics();
+            temp_cd++;
+            c_main->cd(temp_cd);
+            tempchip->drawTdoStatistics();
+            temp_cd++;
+            c_main->cd(temp_cd);
+            tempchip->drawBCIDStatistics();
+            temp_cd++;
+        }
+
+    }
+
+}
+Chamber* MainWindow::findChamber(QString chname)
+{
+    for(Chamber *c:chambers)
+        if(c->getName()==chname)
+            return c;
+    return NULL;
+}
+
+Chip* MainWindow::findChip(QString chname)
+{
+    for(Chip *c:chips)
+        if(c->getName()==chname)
+            return c;
+    return NULL;
 }
 
 ///FILL TEST method - Nothing operational

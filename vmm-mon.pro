@@ -25,7 +25,6 @@ LIBS += -L$(ROOTSYS)/lib -lCore -lCint -lRIO -lNet \
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    monitoringserver.cpp \
     canvas.cxx \
     qsocketclient.cpp \
     chamber.cpp \
@@ -33,7 +32,6 @@ SOURCES += main.cpp\
     datahandler.cpp
 
 HEADERS  += mainwindow.h \
-    monitoringserver.h \
     canvas.h \
     qsocketclient.h \
     chamber.h \

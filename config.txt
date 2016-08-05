@@ -6,7 +6,7 @@
 
 Tmm2 Vmm1.0 Vmm2.0
 MMFE1 Vmm3.0 Vmm4.0
-MMFE2 Vmm5.0 Vmm6.0 Vmm7.0
+MMFE2 Vmm5.0 Vmm6.0 Vmm7.0 Vmm8.0 Vmm9.0 Vmm10.0 Vmm11.0 Vmm12.0
 
 #TLP1 Vmm3.0
 #TLP2 Vmm4.0

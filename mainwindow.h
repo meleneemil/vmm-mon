@@ -30,6 +30,10 @@ private:
     void createCanvas();
     void setupCanvas();
     void insertItem(QString);
+    void drawAllChips();
+    void drawSelectedItems();
+    Chamber* findChamber(QString);
+    Chip* findChip(QString);
 private slots:
     void startCanvasUpdates();
     void stopCanvasUpdates();

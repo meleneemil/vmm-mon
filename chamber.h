@@ -1,16 +1,18 @@
 #ifndef CHAMBER_H
 #define CHAMBER_H
 
+#include <QString>
 #include <vector>
+#include <TH1D.h>
 
-#include "chip.h"
+//#include "chip.h"
 
 class Chamber
 {
 public:
-    Chamber(QString);
-    void addChip(Chip*);
-    std::vector<Chip*> getChips() const;
+    Chamber(QString,int);
+//    void addChip(Chip*);
+//    std::vector<Chip*> getChips() const;
     QString getName();
     void drawChannelStatistics();
     void drawPdoStatistics();
@@ -23,7 +25,8 @@ public:
 
 private:
     QString name;
-    std::vector<Chip*> chips;
+    int noOfChips;
+//    std::vector<Chip*> chips;
     TH1D* h_channel_eventScreen;
     TH1D* h_pdo_eventScreen;
     TH1D* h_tdo_eventScreen;
