@@ -143,8 +143,8 @@ QMainCanvas::QMainCanvas(QWidget *parent) : QWidget(parent)
     QObject::connect( fRootTimer, SIGNAL(timeout()), this, SLOT(handle_root_events()) );
     fRootTimer->start( 20 );
     //set dimensions of stats box (~legend) in hists
-    gStyle->SetStatW(0.25);
-    gStyle->SetStatH(0.5);
+    gStyle->SetStatW(0.3);
+    gStyle->SetStatH(0.4);
     //make histo title larger
 //    gStyle->SetTitleFontSize(0.1);
 //    gStyle->SetLabelSize(0.9);
@@ -196,9 +196,16 @@ void QMainCanvas::Divide(int x,int y)
 {
     canvas->getCanvas()->Divide(x,y);
     noOfPads=x*y;
+
+
 }
 
 void QMainCanvas::cd(int x)
 {
     canvas->getCanvas()->cd(x);
+}
+
+void QMainCanvas::clear()
+{
+    canvas->getCanvas()->Clear();
 }

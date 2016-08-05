@@ -3,11 +3,14 @@
 
 #include <QString>
 #include <TH1D.h>
+#include "chamber.h"
 
 class Chip
 {
 public:
-    Chip(QString);
+    Chip(QString, Chamber*, int);
+    Chamber* getParent();
+    int getIndex();
     QString getName();
     void drawChannelStatistics();
     void drawPdoStatistics();
@@ -22,6 +25,9 @@ public:
     TH1D *getH_bcid_statistics() const;
 
 private:
+    Chamber *parent_chamber;
+    int index_in_parent;
+
     TH1D* h_channel_eventScreen;
     TH1D* h_pdo_eventScreen;
     TH1D* h_tdo_eventScreen;

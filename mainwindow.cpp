@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     configure();//read config file
-    calculate_canvas_dimensions();//based on selected items
-    makeCanvases();
+    createCanvas();
+    setupCanvas();
 
     client = new QSocketClient(1, chambers,chips, c_main); //1ms is ok
     client->start();
@@ -50,7 +50,11 @@ void MainWindow::configure()
             for(int i=1;i<list.size();i++)
             {//start from 1, because 0 was the chamber name
 
-                Chip* c = new Chip(list.at(i));
+                //see Chip constructor
+                //we give it its name
+                //pointer to its parent chamber
+                //its index in the parent, to merge vmms
+                Chip* c = new Chip(list.at(i),tempchamber,i-1);
                 tempchamber->addChip(c);
                 chips.push_back(c);
 
@@ -75,17 +79,23 @@ void MainWindow::configure()
         qDebug() << "Could not open config file.";
 }
 
-void MainWindow::calculate_canvas_dimensions()
+void MainWindow::createCanvas()
 {
+    c_main = new QMainCanvas();
+    c_main->resize(c_main->sizeHint());
+    c_main->setWindowTitle("vmm-mon Canvas");
+    c_main->setGeometry( 100, 100, 700, 500 );
+    c_main->show();
+
+    ///Divide dimensions are init'd here, and adjusted in treeSelectionChanged()
     //the canvas will have a line for every chip,board,or chamber
     //from the selected ones
     canvas_size_in_y = noOfChips;
-
     //this is probably 4 for chips,boards, or chambers...to be seen
     canvas_size_in_x = Chip::getNoOfStatisticsHistos();
 }
 
-void MainWindow::makeCanvases()
+void MainWindow::setupCanvas()
 {
     //the histograms are created in the Chip class
     //since each of them refers to a chip
@@ -99,21 +109,17 @@ void MainWindow::makeCanvases()
     //board  :combined hitmap,pdo,tdo,bcid + eventDisplay on itself
     //chamber:combined hitmap,pdo,tdo,bcid + eventDisplay on itself
     //so, each item=line will have 4 histos (dual, with the eventDisplay)
-
-    c_main = new QMainCanvas();
-    c_main->resize(c_main->sizeHint());
-    c_main->setWindowTitle("vmm-mon Canvas");
-    c_main->setGeometry( 100, 100, 700, 500 );
-    c_main->show();
     c_main->Divide(canvas_size_in_x,canvas_size_in_y);
 
+
+
     int temp_cd=1;
-    for(int i=0;i<chambers.size();i++)
+    for(uint i=0;i<chambers.size();i++)
     {
         Chamber *temp_chamber = chambers.at(i);
         std::vector<Chip*> temp_chips = temp_chamber->getChips();
 
-        for(int j=0;j<temp_chips.size();j++)
+        for(uint j=0;j<temp_chips.size();j++)
         {
             Chip *tempChip = temp_chips.at(j);
 
@@ -135,29 +141,46 @@ void MainWindow::makeCanvases()
 
 void MainWindow::treeSelectionChanged()
 {
-    //    fixTreeSelection();
-    //    updateCanvasFromSelection();
+    ///stop the updates
+    stopCanvasUpdates();
+    c_main->clear();
 
-    qDebug() << "SELECTED ITEMS:";
     //selected items list
     QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
 
     //if list is empty, draw everything
     if(list.size()==0)
     {
-
+        qDebug() << "Empty tree selection";
+        canvas_size_in_y = noOfChips;
+        canvas_size_in_x = Chip::getNoOfStatisticsHistos();
     }
     else
     {
-        for(QTreeWidgetItem * s: list)
-        {
-            if(s->parent())
-                qDebug() << s->parent()->text(0) <<" : "<<s->text(0);
-            else
-                qDebug()<<s->text(0);
-        }
+        //        qDebug() << "SELECTED ITEMS:";
+
+        //        for(QTreeWidgetItem * s: list)
+        //        {
+        //            if(s->parent())
+        //                qDebug() << s->parent()->text(0) <<" : "<<s->text(0);
+        //            else
+        //                qDebug()<<s->text(0);
+        //        }
+
+        //that way we can monitor a board/chamber and a specific chip at the same time
+        canvas_size_in_y = list.size();
+        canvas_size_in_x = Chip::getNoOfStatisticsHistos();
     }
 
+    //redo the setup
+    setupCanvas();
+    ///restart updates
+    startCanvasUpdates();
+}
+
+void MainWindow::on_b_clearTreeSelection_released()
+{
+    ui->setupTreeWidget->clearSelection();
 }
 
 ///FILL TEST method - Nothing operational
@@ -198,6 +221,9 @@ void MainWindow::startCanvasUpdates()
     connect(update_timer, SIGNAL(timeout()), this, SLOT(UpdatePads()));
     update_timer->start(1000);
 
+}void MainWindow::stopCanvasUpdates()
+{
+    update_timer->stop();
 }
 void MainWindow::UpdatePads()
 {
@@ -208,9 +234,4 @@ MainWindow::~MainWindow()
 {
     delete ui;
     //    QApplication::quit();
-}
-
-void MainWindow::on_b_clearTreeSelection_released()
-{
-    ui->setupTreeWidget->clearSelection();
 }

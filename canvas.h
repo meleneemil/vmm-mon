@@ -45,6 +45,7 @@ public slots:
    void ModAndUpd_Pads();
    void Divide(int,int);
    void cd(int);
+   void clear();
 
 protected:
    QRootCanvas    *canvas;

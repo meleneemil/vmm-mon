@@ -27,11 +27,12 @@ public:
 
 private:
     void configure();
-    void calculate_canvas_dimensions();
-    void makeCanvases();
+    void createCanvas();
+    void setupCanvas();
     void insertItem(QString);
 private slots:
     void startCanvasUpdates();
+    void stopCanvasUpdates();
     void UpdatePads();
     void start_random_fill();
     void FillTest();

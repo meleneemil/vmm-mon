@@ -52,8 +52,8 @@ Option 2) This is for optimizing for high rates.
              list.at(i+4).toInt()
              );
     }
-//    if(fill_counter%100==0)
-//        c_main->ModAndUpd_Pads();
+    //    if(fill_counter%100==0)
+    //        c_main->ModAndUpd_Pads();
 }
 
 void DataHandler::fill(QString chip, int strip, int pdo,int tdo, int bcid)
@@ -70,6 +70,14 @@ void DataHandler::fill(QString chip, int strip, int pdo,int tdo, int bcid)
             c->getH_pdo_statistics()->Fill(pdo);
             c->getH_tdo_statistics()->Fill(tdo);
             c->getH_bcid_statistics()->Fill(bcid);
+
+            //also fill the parent of the chip
+            c->getParent->getH_channel_statistics()->Fill(strip+64*c->getIndex());
+            c->getParent->getH_pdo_statistics()->Fill(pdo);
+            c->getParent->getH_tdo_statistics()->Fill(tdo);
+            c->getParent->getH_bcid_statistics()->Fill(bcid);
+
+
             //and break, since we do not need to search anymore
             break;
         }
@@ -117,10 +125,10 @@ void DataHandler::saveDataSendLater(QString data)
 
         //perhaps this will not be optimal yet
         //=>having the ModAndUpd every 10fills...to be seen
-//        if(fill_counter<100)
-//            c_main->ModAndUpd_Pads();
-//        else if(fill_counter%1000==0)
-//            c_main->ModAndUpd_Pads();
+        //        if(fill_counter<100)
+        //            c_main->ModAndUpd_Pads();
+        //        else if(fill_counter%1000==0)
+        //            c_main->ModAndUpd_Pads();
     }
 
 
