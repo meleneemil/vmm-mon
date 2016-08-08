@@ -3,7 +3,7 @@
 # Project created by QtCreator 2016-07-29T18:51:52
 #
 #-------------------------------------------------
- 
+
 #Simple monitoring of VMM DAQ.
 #Aimilianos Koulouris.
 
