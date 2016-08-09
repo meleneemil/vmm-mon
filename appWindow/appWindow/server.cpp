@@ -20,7 +20,7 @@ m_socket_sender(0)
 
     timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(sendData()));
-    timer->start(1000);
+    timer->start(1);
 }
 
 void Server::sendData()
@@ -30,7 +30,7 @@ void Server::sendData()
 
     QByteArray data;
 
-    for(int i=0;i<1;i++)
+    for(int i=0;i<100;i++)
     {
         randomizeChipName();
         qstr_strip = QString::number(rand()%64);
