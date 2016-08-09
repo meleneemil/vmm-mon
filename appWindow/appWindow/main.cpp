@@ -15,8 +15,6 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QLocalServer::removeServer("vmm-mon-server");
-    Server* server = new Server("vmm-mon-server");
-    qDebug()<<"Server running";
+    Server* server = new Server();
     return a.exec();
 }

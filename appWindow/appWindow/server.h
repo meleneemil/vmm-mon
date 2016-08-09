@@ -1,6 +1,10 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <QUdpSocket>
+#include <QTimer>
+#include <QUdpSocket>
+#include <QByteArray>
 #include <QDialog>
 
 class QLocalServer;
@@ -10,13 +14,14 @@ class Server : public QDialog
     Q_OBJECT
 
 public:
-    Server(QString);
+    Server();
 
 public slots:
-    void sendFortune();
+    void sendData();
 
 private:
-    QLocalServer *server;
+    QTimer *timer;
+    QUdpSocket *m_socket_sender;
     int index;
 
     QString qstr_chip;
@@ -27,7 +32,6 @@ private:
     QString msg;
 
     void randomizeChipName();
-    void addSimpleMessageToMsg();
 };
 
 #endif

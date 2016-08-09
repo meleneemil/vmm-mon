@@ -4,33 +4,34 @@
 #include <stdlib.h>
 
 #include "server.h"
-#include <qlocalserver.h>
-#include <qlocalsocket.h>
 
-Server::Server(QString serverName)
+Server::Server():
+m_socket_sender(0)
 {
     index = 0;
-    server = new QLocalServer(this);
-    if (!server->listen(serverName)) {
-        QMessageBox::critical(this, tr("Fortune Server"),
-                              tr("Unable to start the server: %1.")
-                              .arg(server->errorString()));
-        close();
-        return;
+
+    m_socket_sender = new QUdpSocket();
+    bool bind = m_socket_sender->bind(QHostAddress::LocalHost, 2223);
+    if(!bind) {
+        qDebug() << "unable to bind socket SENDER";
+        m_socket_sender->close();
+        m_socket_sender->disconnectFromHost();
     }
 
-    connect(server, SIGNAL(newConnection()), this, SLOT(sendFortune()));
-
+    timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), this, SLOT(sendData()));
+    timer->start(1000);
 }
 
-void Server::sendFortune()
+void Server::sendData()
 {
-
     index++;
     randomizeChipName();
-    //we will add many messages to one string
-    {
 
+    QByteArray data;
+
+    for(int i=0;i<1;i++)
+    {
         randomizeChipName();
         qstr_strip = QString::number(rand()%64);
         qstr_pdo   = QString::number(rand()%200/2 + rand()%300);
@@ -39,28 +40,10 @@ void Server::sendFortune()
         //int n =0             1              2            3            4
         msg =qstr_chip+" "+qstr_strip+" "+qstr_pdo+" "+qstr_tdo+" "+qstr_bcid;
 
-        for(int i=0;i<100;i++)
-        {
-            addSimpleMessageToMsg();
-        }
-    }//end of additions to msg
+        data=msg.toStdString().c_str();
+        m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);
+    }
 
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_0);
-    out << (quint16)0;
-    out << msg;
-
-    out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
-
-    QLocalSocket *clientConnection = server->nextPendingConnection();
-    connect(clientConnection, SIGNAL(disconnected()),
-            clientConnection, SLOT(deleteLater()));
-
-    clientConnection->write(block);
-    clientConnection->flush();
-    clientConnection->disconnectFromServer();
 }
 
 void Server::randomizeChipName()
@@ -107,15 +90,4 @@ void Server::randomizeChipName()
         break;
     }
 
-}
-
-void Server::addSimpleMessageToMsg()
-{
-    randomizeChipName();
-    qstr_strip = QString::number(rand()%64);
-    qstr_pdo   = QString::number(rand()%200/2 + rand()%300);
-    qstr_tdo   = QString::number(rand()%500/2 + rand()%400/2);
-    qstr_bcid  = QString::number(rand()%4096);
-    //int n =     0             1              2            3            4
-    msg +=" "+qstr_chip+" "+qstr_strip+" "+qstr_pdo+" "+qstr_tdo+" "+qstr_bcid;
 }
