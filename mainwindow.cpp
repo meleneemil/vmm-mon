@@ -14,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createCanvas();
     setupCanvas();
 
-    client = new QSocketClient(1, chambers,chips, c_main); //1ms is ok
-    client->start();
+    client = new QSocketClient(chambers,chips, c_main);
+
     //    start_random_fill(); //to test filling
 
     startCanvasUpdates();

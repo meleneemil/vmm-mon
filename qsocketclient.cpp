@@ -1,116 +1,44 @@
 #include "qsocketclient.h"
 
-//server name = "vmm-mon-server" is hardcoded
-//this name should be used when creating the server
-//in the DAQ side
-
 QSocketClient::QSocketClient(
-        int new_request_timeout,
         std::vector<Chamber*> chambers,
         std::vector<Chip*> chips,
         QMainCanvas* c_main
-        )
+        ):
+m_socket_receiver(0),
+event_count(0)
 {
     noOfSuccessfulRequests=0;
 
-    socket = new QLocalSocket();
-
     handler = new DataHandler(chambers,chips,c_main);
 
-    //when socket is ready to read, call readSocket()
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readSocket()));
-    //when connection fails, print error (and request_timetout changes to >1sec)
-    connect(socket, SIGNAL(error(QLocalSocket::LocalSocketError)),
-            this, SLOT(displayError(QLocalSocket::LocalSocketError)));
-
-    socket_requests_timer = new QTimer();
-    //Every *request_timeout*, call connectToServer()
-    connect(socket_requests_timer, SIGNAL(timeout()), this, SLOT(connectToServer()));
-
-
-    request_timeout = new_request_timeout;
-}
-
-bool QSocketClient::start()
-{
-    //Start with request_timeout of 1ms
-    //if socket fails, then we stop.
-    //USER must restart
-    QLocalServer *qs = new QLocalServer();
-    if(qs->listen("vmm-mon-server"))
-    {
-        QLocalServer::removeServer("vmm-mon-server");
-        qDebug() << "Server does not exist. Restart program.";
-        return false;
-    }
-    else
-        startRequests();
-    return true;
-
-}
-
-
-bool QSocketClient::stop()
-{
-    stopRequests();
-    return true;
-}
-
-
-void QSocketClient::startRequests()
-{
-    socket_requests_timer->start(request_timeout);
-}
-void QSocketClient::stopRequests()
-{
-    socket_requests_timer->stop();
-}
-void QSocketClient::connectToServer()
-{
-    blockSize = 0;
-    socket->abort();
-    socket->connectToServer("vmm-mon-server");
-    //    qDebug() << "CONNECTED";
-}
-
-void QSocketClient::readSocket()
-{
-    //this code is directly from the Qt example = Fortune Client
-    QDataStream in(socket);
-    in.setVersion(QDataStream::Qt_4_0);
-
-    if (blockSize == 0) {
-        if (socket->bytesAvailable() < (int)sizeof(quint16))
-        {
-            qDebug() << "no bytes available";
-            return;
-        }
-        in >> blockSize;
+    m_socket_receiver = new QUdpSocket(this);
+    bool bind = m_socket_receiver->bind(QHostAddress::LocalHost, 2224);
+    if(!bind) {
+        qDebug() << "unable to bind socket SENDER";
+        m_socket_receiver->close();
+        m_socket_receiver->disconnectFromHost();
     }
 
-    if (in.atEnd())
-        return;
+    connect(m_socket_receiver, SIGNAL(readyRead()), this, SLOT(readData()));
 
-    QString nextRead;
-    in >> nextRead;
+}
 
-    if (nextRead == currentRead) {
-        QTimer::singleShot(0, this, SLOT(connectToServer()));
-        return;
-    }
+void QSocketClient::readData(){
 
-    //Purely DEBUGGING
-    noOfSuccessfulRequests++;
-    //    if(noOfSuccessfulRequests%1000==0)
-    //        qDebug() << nextRead;
+    QHostAddress fromIP;
+    QByteArray incomingDatagram;
 
-    sendDataToHandler(nextRead);
-    //    std::vector<QString> eventVector;
-    //IMPORTANT TODO: edit to accomodate for multi hit events...
-    //this now assumes that each packet tha comes is an event.
-    //    eventVector.push_back(nextFortune);
-    //    emit fillHistograms(eventVector,eventCounter);
-    //    emit drawHistograms();
+    while(m_socket_receiver->hasPendingDatagrams()) {
+        incomingDatagram.resize(m_socket_receiver->pendingDatagramSize());
+        m_socket_receiver->readDatagram(incomingDatagram.data(),
+                                            incomingDatagram.size(),
+                                            &fromIP);
+
+        QString input = QString(incomingDatagram);
+        sendDataToHandler(input);
+    } // while
+    event_count++;
 }
 
 void QSocketClient::sendDataToHandler(QString data)
@@ -121,26 +49,8 @@ void QSocketClient::sendDataToHandler(QString data)
     //fill strategies
 
     //the simple one: OLD format, Standard Strategy
-    //    handler->writeDataSimple(data);
+        handler->writeDataSimple(data);
 
     //faster!!! : OLD Format, smart strategy
-    handler->saveDataSendLater(data);
-}
-void QSocketClient::displayError(QLocalSocket::LocalSocketError socketError)
-{
-
-    switch (socketError) {
-    case QLocalSocket::ServerNotFoundError:
-        qDebug() << "The host was not found. Please check the host name and port settings.";
-        break;
-    case QLocalSocket::ConnectionRefusedError:
-        qDebug() << "The connection was refused by the peer. Make sure the fortune server is running, and check that the host name and port settings are correct.";
-        qDebug() << "RESTART MONITORING.";
-        stopRequests();
-        break;
-    case QLocalSocket::PeerClosedError:
-        break;
-    default:
-        qDebug() << "The following error occurred: %1." <<  (socket->errorString());
-    }
+//    handler->saveDataSendLater(data);
 }

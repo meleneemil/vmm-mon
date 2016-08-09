@@ -1,10 +1,7 @@
 #ifndef QSOCKETCLIENT_H
 #define QSOCKETCLIENT_H
 
-#include <QLocalSocket>
-#include <QLocalServer>
-#include <QTimer>
-#include <QDataStream>
+#include <QUdpSocket>
 
 #include "datahandler.h"
 #include "chamber.h"
@@ -15,30 +12,21 @@ class QSocketClient : public QObject
     Q_OBJECT
 
 public:
-    QSocketClient(int,
-                  std::vector<Chamber*>,
+    QSocketClient(std::vector<Chamber*>,
                   std::vector<Chip*>,
                   QMainCanvas*
                   );
 
-    bool start();
-    bool stop();
 
 private:
-    QTimer* socket_requests_timer;
-    QLocalSocket *socket;
-    quint16 blockSize;
-    QString currentRead;
-    int request_timeout;
+    QUdpSocket *m_socket_receiver;
+    int event_count;
+
     DataHandler *handler;
     int noOfSuccessfulRequests;
 
 private slots:
-    void connectToServer();
-    void startRequests();
-    void stopRequests();
-    void displayError(QLocalSocket::LocalSocketError socketError);
-    void readSocket();
+    void readData();
     void sendDataToHandler(QString);
 
 };
