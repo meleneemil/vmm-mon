@@ -30,6 +30,18 @@ Chamber::Chamber(QString newname, int no_of_children)
     h_tdo_statistics->GetXaxis()->SetTitleSize(.5);
     h_bcid_statistics->GetXaxis()->SetTitleSize(.5);
 
+
+    h_channel_statistics->SetFillStyle(3001);
+    h_pdo_statistics    ->SetFillStyle(3001);
+    h_tdo_statistics    ->SetFillStyle(3001);
+    //h_bcid_statistics   ->SetFillStyle(3001);
+
+
+    h_channel_statistics->SetFillColor(kRed);
+    h_pdo_statistics    ->SetFillColor(kBlue);
+    h_tdo_statistics    ->SetFillColor(kGreen);
+    //h_bcid_statistics   ->SetFillColor(kViolet);
+
 }
 
 //void Chamber::addChip(Chip* newchip)

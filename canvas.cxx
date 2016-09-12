@@ -122,6 +122,7 @@ void QRootCanvas::paintEvent( QPaintEvent * )
     // Handle paint events.
 
     if (fCanvas) {
+//        std::cout << "TEST"<<std::endl;
         fCanvas->Resize();
         fCanvas->Update();
     }
