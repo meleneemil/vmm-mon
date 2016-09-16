@@ -33,12 +33,13 @@ void Server::sendData()
     for(int i=0;i<100;i++)
     {
         randomizeChipName();
-        qstr_strip = QString::number(rand()%64);
-        qstr_pdo   = QString::number(rand()%200/2 + rand()%300);
-        qstr_tdo   = QString::number(rand()%500/2 + rand()%400/2);
-        qstr_bcid  = QString::number(rand()%4096);
-        //int n =0             1              2            3            4
-        msg =qstr_chip+" "+qstr_strip+" "+qstr_pdo+" "+qstr_tdo+" "+qstr_bcid;
+        qstr_trig_cnt = QString::number(index);
+        qstr_strip    = QString::number(rand()%64);
+        qstr_pdo      = QString::number(rand()%200/2 + rand()%300);
+        qstr_tdo      = QString::number(rand()%500/2 + rand()%400/2);
+        qstr_bcid     = QString::number(rand()%4096);
+        //int n =0                 1             2              3            4            5
+        msg =    qstr_trig_cnt+" "+qstr_chip+" "+qstr_strip+" "+qstr_pdo+" "+qstr_tdo+" "+qstr_bcid;
 
         data=msg.toStdString().c_str();
         m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);

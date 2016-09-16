@@ -35,14 +35,14 @@ Option 2) This is for optimizing for high rates.
 
 */
 
-    ///here we do FORMAT Option 2
+    ///here we do FORMAT Option 2 (one packet, many hits, but even if one, doesn't matter)
     //with fill strategy 1
 
     QStringList list = data.split(" ");
 
     //old format, simplified
 
-    //size must be a multiple of 5!!
+    //size must be a multiple of 6!!
     for(int i=0;i<list.size();i+=5)
     {
         fill(list.at(i),

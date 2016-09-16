@@ -24,6 +24,7 @@ private:
     QUdpSocket *m_socket_sender;
     int index;
 
+    QString qstr_trig_cnt;
     QString qstr_chip;
     QString qstr_strip;
     QString qstr_pdo  ;
