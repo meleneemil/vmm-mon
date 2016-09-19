@@ -24,6 +24,11 @@ public:
     TH1D *getH_tdo_statistics() const;
     TH1D *getH_bcid_statistics() const;
 
+    TH1D *getH_channel_eventScreen() const;
+    TH1D *getH_pdo_eventScreen() const;
+    TH1D *getH_tdo_eventScreen() const;
+    TH1D *getH_bcid_eventScreen() const;
+
 private:
     Chamber *parent_chamber;
     int index_in_parent;

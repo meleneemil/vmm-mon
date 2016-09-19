@@ -83,6 +83,26 @@ TH1D *Chip::getH_bcid_statistics() const
     return h_bcid_statistics;
 }
 
+TH1D *Chip::getH_channel_eventScreen() const
+{
+    return h_channel_eventScreen;
+}
+
+TH1D *Chip::getH_pdo_eventScreen() const
+{
+    return h_pdo_eventScreen;
+}
+
+TH1D *Chip::getH_tdo_eventScreen() const
+{
+    return h_tdo_eventScreen;
+}
+
+TH1D *Chip::getH_bcid_eventScreen() const
+{
+    return h_bcid_eventScreen;
+}
+
 void Chip::drawChannelStatistics()
 {
     h_channel_statistics->Draw();

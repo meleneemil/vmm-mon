@@ -12,7 +12,7 @@ class DataHandler
 public:
     DataHandler(std::vector<Chamber*>,std::vector<Chip*>,QMainCanvas*);
     void writeDataSimple(QString);
-    void fill(QString,int,int,int,int);
+    void fill(int,QString,int,int,int,int);
 //    void fill(QString,std::vector<int>,std::vector<int>,std::vector<int>,std::vector<int>);
     void saveDataSendLater(QString);
 
@@ -22,6 +22,7 @@ private:
     QMainCanvas* c_main;
 //    int findChamberFromChip(QString);
     int fill_counter;
+    int last_trig_cnt;
 
     std::vector<QString> s_chips;
     std::vector<int> s_strip;

@@ -43,22 +43,25 @@ Option 2) This is for optimizing for high rates.
     //old format, simplified
 
     //size must be a multiple of 6!!
-    for(int i=0;i<list.size();i+=5)
+    for(int i=0;i<list.size();i+=6)
     {
-        fill(list.at(i),
-             list.at(i+1).toInt(),
+        fill(list.at(i).toInt(),
+             list.at(i+1),
              list.at(i+2).toInt(),
              list.at(i+3).toInt(),
-             list.at(i+4).toInt()
+             list.at(i+4).toInt(),
+             list.at(i+5).toInt()
              );
     }
     //    if(fill_counter%100==0)
     //        c_main->ModAndUpd_Pads();
 }
 
-void DataHandler::fill(QString chip, int strip, int pdo,int tdo, int bcid)
+void DataHandler::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, int bcid)
 {
     //    qDebug() << "Filling with: "<<chip<<" "<<strip<<" "<<pdo;
+
+
 
     fill_counter++;
     for(Chip* c: chips)
@@ -76,6 +79,19 @@ void DataHandler::fill(QString chip, int strip, int pdo,int tdo, int bcid)
             c->getParent()->getH_pdo_statistics()->Fill(pdo);
             c->getParent()->getH_tdo_statistics()->Fill(tdo);
             c->getParent()->getH_bcid_statistics()->Fill(bcid);
+
+            //also fill the event display histos (and reset if new event)
+            if(! trig_cnt == last_trig_cnt)
+            {
+             c->getH_channel_eventScreen()->Reset();
+             c->getH_pdo_eventScreen()    ->Reset();
+             c->getH_tdo_eventScreen()    ->Reset();
+             c->getH_bcid_eventScreen()   ->Reset();
+            }
+            c->getH_channel_eventScreen()-> Fill(strip);
+            c->getH_pdo_eventScreen()    -> Fill(pdo);
+            c->getH_tdo_eventScreen()    -> Fill(tdo);
+            c->getH_bcid_eventScreen()   -> Fill(bcid);
 
 
             //and break, since we do not need to search anymore
@@ -96,13 +112,13 @@ void DataHandler::saveDataSendLater(QString data)
 
     //old format, but simplified
     //size must be a multiple of 5!!
-    for(int i=0;i<list.size();i+=5)
+    for(int i=0;i<list.size();i+=6)
     {
-        s_chips.push_back( list.at(i));
-        s_strip.push_back( list.at(i+1).toInt());
-        s_pdo.push_back(   list.at(i+2).toInt());
-        s_tdo.push_back(   list.at(i+3).toInt());
-        s_bcid.push_back(  list.at(i+4).toInt());
+        s_chips.push_back( list.at(i+1));
+        s_strip.push_back( list.at(i+2).toInt());
+        s_pdo.push_back(   list.at(i+3).toInt());
+        s_tdo.push_back(   list.at(i+4).toInt());
+        s_bcid.push_back(  list.at(i+5).toInt());
     }
     //And we will fill+ModAndUpd every 10 received fuking packets
     if(s_chips.size()>200)
@@ -110,7 +126,8 @@ void DataHandler::saveDataSendLater(QString data)
         for(int i=0;i<s_chips.size();i++)
         {
 
-            fill(s_chips.at(i),
+            fill(0,//TODO: FIX THIS IF YOU USE IT #WARNING FIX THIS IF YOU USE IT
+                 s_chips.at(i),
                  s_strip.at(i),
                  s_pdo.at(  i),
                  s_tdo.at(  i),
