@@ -18,6 +18,10 @@ public:
     void drawPdoStatistics();
     void drawTdoStatistics();
     void drawBCIDStatistics();
+    void drawChannelEvent();
+    void drawPdoEvent();
+    void drawTdoEvent();
+    void drawBCIDEvent();
     TH1D *getH_channel_statistics() const;
     TH1D *getH_pdo_statistics() const;
     TH1D *getH_tdo_statistics() const;

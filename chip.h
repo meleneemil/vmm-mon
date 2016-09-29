@@ -16,6 +16,10 @@ public:
     void drawPdoStatistics();
     void drawTdoStatistics();
     void drawBCIDStatistics();
+    void drawChannelEvent();
+    void drawPdoEvent();
+    void drawTdoEvent();
+    void drawBCIDEvent();
 
     static int getNoOfStatisticsHistos();
 

@@ -52,6 +52,7 @@ private:
     std::vector<Chamber*> chambers;
     std::vector<Chip*> chips;
     QMainCanvas *c_main;
+    QMainCanvas *c_event;
     QSocketClient *client;
     int noOfChambers=0;
     int noOfChips=0;

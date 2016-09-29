@@ -89,7 +89,7 @@ void MainWindow::createCanvas()
 {
     c_main = new QMainCanvas();
     c_main->resize(c_main->sizeHint());
-    c_main->setWindowTitle("vmm-mon Canvas");
+    c_main->setWindowTitle("vmm-mon Statistics");
     c_main->setGeometry( 100, 100, 700, 500 );
     c_main->show();
 
@@ -99,6 +99,23 @@ void MainWindow::createCanvas()
     canvas_size_in_y = noOfChips;
     //this is probably 4 for chips,boards, or chambers...to be seen
     canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+
+    // --------  Here follows canvas for event display ----
+    //code to create it is copy paste from the above lines
+
+
+    c_event = new QMainCanvas();
+    c_event->resize(c_event->sizeHint());
+    c_event->setWindowTitle("vmm-mon Event Display");
+    c_event->setGeometry( 150, 150, 700, 500 );
+    c_event->show();
+
+    ///Divide dimensions are init'd here, and adjusted in treeSelectionChanged()
+    //the canvas will have a line for every chip,board,or chamber
+    //from the selected ones
+    // same size variables as other canvas will be used
+
+
 }
 
 void MainWindow::setupCanvas()
@@ -116,6 +133,7 @@ void MainWindow::setupCanvas()
     //chamber:combined hitmap,pdo,tdo,bcid + eventDisplay on itself
     //so, each item=line will have 4 histos (dual, with the eventDisplay)
     c_main->Divide(canvas_size_in_x,canvas_size_in_y);
+    c_event->Divide(canvas_size_in_x,canvas_size_in_y);
 
     if(ui->setupTreeWidget->selectedItems().size()==0)
     {//list selection is empty
@@ -133,6 +151,7 @@ void MainWindow::treeSelectionChanged()
     ///stop the updates
     stopCanvasUpdates();
     c_main->clear();
+    c_event->clear();
 
     //selected items list
     QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
@@ -179,15 +198,23 @@ void MainWindow::drawAllChips()
     {
         c_main->cd(temp_cd);
         tempChip->drawChannelStatistics();
+        c_event->cd(temp_cd);
+        tempChip->drawChannelEvent();
         temp_cd++;
         c_main->cd(temp_cd);
         tempChip->drawPdoStatistics();
+        c_event->cd(temp_cd);
+        tempChip->drawPdoEvent();
         temp_cd++;
         c_main->cd(temp_cd);
         tempChip->drawTdoStatistics();
+        c_event->cd(temp_cd);
+        tempChip->drawTdoEvent();
         temp_cd++;
         c_main->cd(temp_cd);
         tempChip->drawBCIDStatistics();
+        c_event->cd(temp_cd);
+        tempChip->drawBCIDEvent();
         temp_cd++;
     }
 }
@@ -204,16 +231,28 @@ void MainWindow::drawSelectedItems()
         {
             c_main->cd(temp_cd);
             c->drawChannelStatistics();
+            c_event->cd(temp_cd);
+            c->drawChannelEvent();
+
             temp_cd++;
             c_main->cd(temp_cd);
             c->drawPdoStatistics();
+            c_event->cd(temp_cd);
+            c->drawPdoEvent();
+
             temp_cd++;
             c_main->cd(temp_cd);
             c->drawTdoStatistics();
+            c_event->cd(temp_cd);
+            c->drawTdoEvent();
+
             temp_cd++;
             c_main->cd(temp_cd);
             c->drawBCIDStatistics();
+            c_event->cd(temp_cd);
+            c->drawBCIDEvent();
             temp_cd++;
+
         }
         else
         {
@@ -221,15 +260,26 @@ void MainWindow::drawSelectedItems()
 
             c_main->cd(temp_cd);
             tempchip->drawChannelStatistics();
+            c_event->cd(temp_cd);
+            tempchip->drawChannelEvent();
             temp_cd++;
+
             c_main->cd(temp_cd);
             tempchip->drawPdoStatistics();
+            c_event->cd(temp_cd);
+            tempchip->drawPdoEvent();
             temp_cd++;
+
             c_main->cd(temp_cd);
             tempchip->drawTdoStatistics();
+            c_event->cd(temp_cd);
+            tempchip->drawTdoEvent();
             temp_cd++;
+
             c_main->cd(temp_cd);
             tempchip->drawBCIDStatistics();
+            c_event->cd(temp_cd);
+            tempchip->drawBCIDEvent();
             temp_cd++;
         }
 
@@ -297,6 +347,7 @@ void MainWindow::startCanvasUpdates()
 void MainWindow::UpdatePads()
 {
     c_main->ModAndUpd_Pads();
+    c_event->ModAndUpd_Pads();
 }
 ///whatevers
 MainWindow::~MainWindow()

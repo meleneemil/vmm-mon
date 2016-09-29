@@ -122,3 +122,23 @@ void Chip::drawBCIDStatistics()
 {
     h_bcid_statistics->Draw();
 }
+
+void Chip::drawChannelEvent()
+{
+    h_channel_eventScreen->Draw();
+}
+
+void Chip::drawPdoEvent()
+{
+    h_pdo_eventScreen->Draw();
+}
+
+void Chip::drawTdoEvent()
+{
+    h_tdo_eventScreen->Draw();
+}
+
+void Chip::drawBCIDEvent()
+{
+    h_bcid_eventScreen->Draw();
+}

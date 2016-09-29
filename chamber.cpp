@@ -98,3 +98,23 @@ void Chamber::drawBCIDStatistics()
 {
     h_bcid_statistics->Draw();
 }
+
+void Chamber::drawChannelEvent()
+{
+    h_channel_eventScreen->Draw();
+}
+
+void Chamber::drawPdoEvent()
+{
+    h_pdo_eventScreen->Draw();
+}
+
+void Chamber::drawTdoEvent()
+{
+    h_tdo_eventScreen->Draw();
+}
+
+void Chamber::drawBCIDEvent()
+{
+    h_bcid_eventScreen->Draw();
+}
