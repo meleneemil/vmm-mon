@@ -59,8 +59,8 @@ Option 2) This is for optimizing for high rates.
 
 void DataHandler::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, int bcid)
 {
-    //    qDebug() << "Filling with: "<<chip<<" "<<strip<<" "<<pdo;
-
+    //        qDebug() << "Filling with: "<<chip<<" "<<strip<<" "<<pdo;
+    //    qDebug() << "TRIG = "<<trig_cnt;
 
 
     fill_counter++;
@@ -80,13 +80,16 @@ void DataHandler::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, i
             c->getParent()->getH_tdo_statistics()->Fill(tdo);
             c->getParent()->getH_bcid_statistics()->Fill(bcid);
 
+            qDebug() << "trig = "<<trig_cnt<<" // last_trig = "<<last_trig_cnt;
             //also fill the event display histos (and reset if new event)
-            if(! trig_cnt == last_trig_cnt)
+            if(!(trig_cnt == last_trig_cnt))
             {
-             c->getH_channel_eventScreen()->Reset();
-             c->getH_pdo_eventScreen()    ->Reset();
-             c->getH_tdo_eventScreen()    ->Reset();
-             c->getH_bcid_eventScreen()   ->Reset();
+                qDebug() << "Resetting";
+                c->getH_channel_eventScreen()->Reset();
+                c->getH_pdo_eventScreen()    ->Reset();
+                c->getH_tdo_eventScreen()    ->Reset();
+                c->getH_bcid_eventScreen()   ->Reset();
+                //             last_trig_cnt = trig_cnt;
             }
             c->getH_channel_eventScreen()-> Fill(strip);
             c->getH_pdo_eventScreen()    -> Fill(pdo);
@@ -99,6 +102,7 @@ void DataHandler::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, i
         }
 
     }
+    last_trig_cnt=trig_cnt;
 }
 
 

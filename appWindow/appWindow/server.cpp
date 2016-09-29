@@ -50,7 +50,10 @@ void Server::sendData()
 void Server::randomizeChipName()
 {
 
-    switch (rand()%12) {
+    switch (
+            //0
+            rand()%12
+            ) {
     case 0:
         qstr_chip = "Vmm1.0";
         break;
