@@ -84,7 +84,7 @@ void DataHandler::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, i
             //also fill the event display histos (and reset if new event)
             if(!(trig_cnt == last_trig_cnt))
             {
-                qDebug() << "Resetting";
+//                qDebug() << "Resetting";
                 c->getH_channel_eventScreen()->Reset();
                 c->getH_pdo_eventScreen()    ->Reset();
                 c->getH_tdo_eventScreen()    ->Reset();
