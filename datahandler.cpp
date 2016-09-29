@@ -80,7 +80,7 @@ void DataHandler::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, i
             c->getParent()->getH_tdo_statistics()->Fill(tdo);
             c->getParent()->getH_bcid_statistics()->Fill(bcid);
 
-            qDebug() << "trig = "<<trig_cnt<<" // last_trig = "<<last_trig_cnt;
+//            qDebug() << "trig = "<<trig_cnt<<" // last_trig = "<<last_trig_cnt;
             //also fill the event display histos (and reset if new event)
             if(!(trig_cnt == last_trig_cnt))
             {
