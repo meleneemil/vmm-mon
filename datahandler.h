@@ -23,6 +23,9 @@ private:
 //    int findChamberFromChip(QString);
     int fill_counter;
     int last_trig_cnt;
+    QString tmp_list1;
+    std::vector<std::vector<QString>> config_table;
+    std::vector<QString> config_row;
 
     std::vector<QString> s_chips;
     std::vector<int> s_strip;

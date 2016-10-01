@@ -39,22 +39,53 @@ Option 2) This is for optimizing for high rates.
     //with fill strategy 1
 
     QStringList list = data.split(" ");
-
-    //old format, simplified
-
-    //size must be a multiple of 6!!
-    for(int i=0;i<list.size();i+=6)
+//    qDebug() << "list size = "<<list.size();
+    tmp_list1 = list.at(1);
+    //tree config packet
+    if(list.at(0)=="config")
     {
-        fill(list.at(i).toInt(),
-             list.at(i+1),
-             list.at(i+2).toInt(),
-             list.at(i+3).toInt(),
-             list.at(i+4).toInt(),
-             list.at(i+5).toInt()
-             );
+        qDebug() << "in config";
+        if(tmp_list1=="start")
+        {
+            config_table.clear();
+        }
+        else if(tmp_list1 == "end")
+        {
+            //            sendConfigToMainWindow();
+            for(std::vector<QString> c: config_table)
+                for(QString qq: c)
+                    qDebug() << qq;
+
+
+        }
+        else
+        {
+            list.removeFirst();
+            for(QString ss: list)
+                config_row.push_back(ss);
+
+            config_table.push_back(config_row);
+            config_row.clear();
+        }
+
     }
-    //    if(fill_counter%100==0)
-    //        c_main->ModAndUpd_Pads();
+    else//normal data packet
+    {
+        //old format, simplified
+
+        //size must be a multiple of 6!!
+        for(int i=0;i<list.size();i+=6)
+        {
+            fill(list.at(i).toInt(),
+                 list.at(i+1),
+                 list.at(i+2).toInt(),
+                 list.at(i+3).toInt(),
+                 list.at(i+4).toInt(),
+                 list.at(i+5).toInt()
+                 );
+        }
+
+    }
 }
 
 void DataHandler::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, int bcid)
@@ -80,11 +111,11 @@ void DataHandler::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, i
             c->getParent()->getH_tdo_statistics()->Fill(tdo);
             c->getParent()->getH_bcid_statistics()->Fill(bcid);
 
-//            qDebug() << "trig = "<<trig_cnt<<" // last_trig = "<<last_trig_cnt;
+            //            qDebug() << "trig = "<<trig_cnt<<" // last_trig = "<<last_trig_cnt;
             //also fill the event display histos (and reset if new event)
             if(!(trig_cnt == last_trig_cnt))
             {
-//                qDebug() << "Resetting";
+                //                qDebug() << "Resetting";
                 c->getH_channel_eventScreen()->Reset();
                 c->getH_pdo_eventScreen()    ->Reset();
                 c->getH_tdo_eventScreen()    ->Reset();

@@ -23,6 +23,7 @@ m_socket_sender(0)
     QByteArray data;
     QString msg;
     msg = "config start";
+    data=msg.toStdString().c_str();
     m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);
     msg = "config MMFE1 VMM1 VMM2";
     data=msg.toStdString().c_str();
