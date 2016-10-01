@@ -18,6 +18,26 @@ m_socket_sender(0)
         m_socket_sender->disconnectFromHost();
     }
 
+    //send dummy config
+
+    QByteArray data;
+    QString msg;
+    msg = "config start";
+    m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);
+    msg = "config MMFE1 VMM1 VMM2";
+    data=msg.toStdString().c_str();
+    m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);
+    msg = "config MMFE2 VMM3 VMM4";
+    data=msg.toStdString().c_str();
+    m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);
+    msg = "config MMFE3 VMM5 VMM6";
+    data=msg.toStdString().c_str();
+    m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);
+    msg = "config end";
+    data=msg.toStdString().c_str();
+    m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);
+
+
     timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(sendData()));
     timer->start(1);
