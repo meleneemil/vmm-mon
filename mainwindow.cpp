@@ -130,7 +130,7 @@ Option 2) This is for optimizing for high rates.
     //tree config packet
     if(list.at(0)=="config")
     {
-        qDebug() << "in config";
+        debug("in config");
         if(tmp_list1=="start")
         {
 //            stopCanvasUpdates();
@@ -144,6 +144,7 @@ Option 2) This is for optimizing for high rates.
 
             setupConfigLists();
             startCanvasUpdates();
+            treeSelectionChanged();
 
             isConfigured = true;
             //            for(std::vector<QString> c: config_table)
@@ -212,7 +213,7 @@ void MainWindow::setupConfigLists()
         chambers.push_back(tempchamber);
     }//for each configLine (each chamber)
 
-    printInfo();
+//    printInfo();
 
 }
 void MainWindow::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, int bcid)
