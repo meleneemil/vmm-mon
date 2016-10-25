@@ -64,9 +64,9 @@ void MainWindow::setupCanvas()
     ///Divide dimensions are init'd here, and adjusted in treeSelectionChanged()
     //the canvas will have a line for every chip,board,or chamber
     //from the selected ones
-//    canvas_size_in_y = chips.size();
+    //    canvas_size_in_y = chips.size();
     //this is probably 4 for chips,boards, or chambers...to be seen
-//    canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+    //    canvas_size_in_x = Chip::getNoOfStatisticsHistos();
 
     //the histograms are created in the Chip class
     //since each of them refers to a chip
@@ -133,7 +133,10 @@ Option 2) This is for optimizing for high rates.
         debug("in config");
         if(tmp_list1=="start")
         {
-//            stopCanvasUpdates();
+            clearAllHistos();//to prepare for new config
+            ui->setupTreeWidget->clear();
+            chambers.clear();
+            chips.clear();
             config_table.clear();
         }
         else if(tmp_list1 == "end")
@@ -213,7 +216,7 @@ void MainWindow::setupConfigLists()
         chambers.push_back(tempchamber);
     }//for each configLine (each chamber)
 
-//    printInfo();
+    //    printInfo();
 
 }
 void MainWindow::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, int bcid)
@@ -227,7 +230,7 @@ void MainWindow::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, in
         if(c->getName()==chip)
         {
 
-//            qDebug() << "Filling with: "<<chip<<" "<<strip<<" "<<pdo;
+            //            qDebug() << "Filling with: "<<chip<<" "<<strip<<" "<<pdo;
             //now we are in the correct Chip
             c->getH_channel_statistics()->Fill(strip);
             c->getH_pdo_statistics()->Fill(pdo);
@@ -371,6 +374,14 @@ void MainWindow::drawSelectedItems()
     }
 
 }
+void MainWindow::clearAllHistos()
+{
+    for(Chamber *c: chambers)
+        c->clearAllHistos();
+    for(Chip *c: chips)
+        c->clearAllHistos();
+}
+
 /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
 void MainWindow::startCanvasUpdates()
 {

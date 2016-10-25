@@ -43,6 +43,20 @@ h_tdo_statistics    ->SetFillColor(kGreen);
 
 }
 
+void Chip::clearAllHistos()
+{
+
+    h_channel_eventScreen->Clear();
+    h_pdo_eventScreen->Clear();
+    h_tdo_eventScreen->Clear();
+    h_bcid_eventScreen->Clear();
+
+    h_channel_statistics->Clear();
+    h_pdo_statistics->Clear();
+    h_tdo_statistics->Clear();
+    h_bcid_statistics->Clear();
+}
+
 QString Chip::getName()
 {
     return name;

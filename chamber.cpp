@@ -44,15 +44,20 @@ Chamber::Chamber(QString newname, int no_of_children)
 
 }
 
-//void Chamber::addChip(Chip* newchip)
-//{
-//    chips.push_back(newchip);
-//}
+void Chamber::clearAllHistos()
+{
 
-//std::vector<Chip*> Chamber::getChips() const
-//{
-//    return chips;
-//}
+    h_channel_event->Clear();
+    h_pdo_event->Clear();
+    h_tdo_event->Clear();
+    h_bcid_event->Clear();
+
+    h_channel_statistics->Clear();
+    h_pdo_statistics->Clear();
+    h_tdo_statistics->Clear();
+    h_bcid_statistics->Clear();
+
+}
 
 QString Chamber::getName()
 {

@@ -31,6 +31,9 @@ public:
     TH1D *getH_tdo_event() const;
     TH1D *getH_bcid_event() const;
 
+    void clearAllHistos();
+
+
 private:
     QString name;
     int noOfChips;

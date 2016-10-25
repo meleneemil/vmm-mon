@@ -60,6 +60,7 @@ private slots:
     /// DRAWING FUNCTIONS
     void drawAllChips();
     void drawSelectedItems();
+    void clearAllHistos();
     /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
     void startCanvasUpdates();
     void stopCanvasUpdates();
