@@ -19,23 +19,19 @@ INCLUDEPATH += $(ROOTSYS)/include
 LIBS += -L$(ROOTSYS)/lib -lCore -lCint -lRIO -lNet \
         -lHist -lGraf -lGraf3d -lGpad -lTree \
         -lRint -lPostscript -lMatrix -lPhysics \
-        -lGui \ #-lMathCore \
+        -lGui \
         -lRIO -lNet -lHist -lTree -lMatrix -lProof -lThread -lCore -lCint -lMathCore  -lTree -lm -ldl  -rdynamic
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     canvas.cxx \
-    qsocketclient.cpp \
     chamber.cpp \
-    chip.cpp \
-    datahandler.cpp
+    chip.cpp
 
 HEADERS  += mainwindow.h \
     canvas.h \
-    qsocketclient.h \
     chamber.h \
-    chip.h \
-    datahandler.h
+    chip.h
 
 FORMS    += mainwindow.ui

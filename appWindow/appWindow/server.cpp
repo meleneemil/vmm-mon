@@ -76,22 +76,22 @@ void Server::randomizeChipName()
             rand()%12
             ) {
     case 0:
-        qstr_chip = "Vmm1.0";
+        qstr_chip = "VMM1";
         break;
     case 1:
-        qstr_chip = "Vmm2.0";
+        qstr_chip = "VMM2";
         break;
     case 2:
-        qstr_chip = "Vmm3.0";
+        qstr_chip = "VMM3";
         break;
     case 3:
-        qstr_chip = "Vmm4.0";
+        qstr_chip = "VMM4";
         break;
     case 4:
-        qstr_chip = "Vmm5.0";
+        qstr_chip = "VMM5";
         break;
     case 5:
-        qstr_chip = "Vmm6.0";
+        qstr_chip = "VMM6";
         break;
     case 6:
         qstr_chip = "Vmm7.0";
