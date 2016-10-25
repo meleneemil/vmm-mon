@@ -144,7 +144,7 @@ Option 2) This is for optimizing for high rates.
 
             setupConfigLists();
             startCanvasUpdates();
-            treeSelectionChanged();
+            treeSelectionChanged();//trigger this to setup correctly
 
             isConfigured = true;
             //            for(std::vector<QString> c: config_table)
@@ -249,12 +249,22 @@ void MainWindow::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, in
                 c->getH_pdo_eventScreen()    ->Reset();
                 c->getH_tdo_eventScreen()    ->Reset();
                 c->getH_bcid_eventScreen()   ->Reset();
+
+                c->getParent()->getH_channel_event()->Reset();
+                c->getParent()->getH_pdo_event()    ->Reset();
+                c->getParent()->getH_tdo_event()    ->Reset();
+                c->getParent()->getH_bcid_event()   ->Reset();
                 //             last_trig_cnt = trig_cnt;
             }
             c->getH_channel_eventScreen()-> Fill(strip);
             c->getH_pdo_eventScreen()    -> Fill(pdo);
             c->getH_tdo_eventScreen()    -> Fill(tdo);
             c->getH_bcid_eventScreen()   -> Fill(bcid);
+
+            c->getParent()->getH_channel_event()->Fill(strip+64*c->getIndex());
+            c->getParent()->getH_pdo_event()->Fill(pdo);
+            c->getParent()->getH_tdo_event()->Fill(tdo);
+            c->getParent()->getH_bcid_event()->Fill(bcid);
 
 
             //and break, since we do not need to search anymore

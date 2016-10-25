@@ -11,10 +11,10 @@ Chamber::Chamber(QString newname, int no_of_children)
     QString t_pe = "h_pdo_event "+name;
     QString t_te = "h_tdo_event "+name;
     QString t_be = "h_bcid_event "+name;
-    h_channel_eventScreen = new TH1D(t_ce.toUtf8().data(),t_ce.toUtf8().data(),64,0,hitmap_bins);
-    h_pdo_eventScreen     = new TH1D(t_pe.toUtf8().data(),t_pe.toUtf8().data(),501,0,500);
-    h_tdo_eventScreen     = new TH1D(t_te.toUtf8().data(),t_te.toUtf8().data(),5010,0,500);
-    h_bcid_eventScreen    = new TH1D(t_be.toUtf8().data(),t_be.toUtf8().data(),4097,0,4096);
+    h_channel_event = new TH1D(t_ce.toUtf8().data(),t_ce.toUtf8().data(),64,0,hitmap_bins);
+    h_pdo_event     = new TH1D(t_pe.toUtf8().data(),t_pe.toUtf8().data(),501,0,500);
+    h_tdo_event     = new TH1D(t_te.toUtf8().data(),t_te.toUtf8().data(),5010,0,500);
+    h_bcid_event    = new TH1D(t_be.toUtf8().data(),t_be.toUtf8().data(),4097,0,4096);
 
     QString t_cs = "h_channel_statistics "+name;
     QString t_ps = "h_pdo_statistics "+name;
@@ -79,6 +79,26 @@ TH1D *Chamber::getH_bcid_statistics() const
     return h_bcid_statistics;
 }
 
+TH1D *Chamber::getH_channel_event() const
+{
+    return h_channel_event;
+}
+
+TH1D *Chamber::getH_pdo_event() const
+{
+    return h_pdo_event;
+}
+
+TH1D *Chamber::getH_tdo_event() const
+{
+    return h_tdo_event;
+}
+
+TH1D *Chamber::getH_bcid_event() const
+{
+    return h_bcid_event;
+}
+
 void Chamber::drawChannelStatistics()
 {
     h_channel_statistics->Draw();
@@ -101,20 +121,20 @@ void Chamber::drawBCIDStatistics()
 
 void Chamber::drawChannelEvent()
 {
-    h_channel_eventScreen->Draw();
+    h_channel_event->Draw();
 }
 
 void Chamber::drawPdoEvent()
 {
-    h_pdo_eventScreen->Draw();
+    h_pdo_event->Draw();
 }
 
 void Chamber::drawTdoEvent()
 {
-    h_tdo_eventScreen->Draw();
+    h_tdo_event->Draw();
 }
 
 void Chamber::drawBCIDEvent()
 {
-    h_bcid_eventScreen->Draw();
+    h_bcid_event->Draw();
 }

@@ -26,15 +26,19 @@ public:
     TH1D *getH_pdo_statistics() const;
     TH1D *getH_tdo_statistics() const;
     TH1D *getH_bcid_statistics() const;
+    TH1D *getH_channel_event() const;
+    TH1D *getH_pdo_event() const;
+    TH1D *getH_tdo_event() const;
+    TH1D *getH_bcid_event() const;
 
 private:
     QString name;
     int noOfChips;
 //    std::vector<Chip*> chips;
-    TH1D* h_channel_eventScreen;
-    TH1D* h_pdo_eventScreen;
-    TH1D* h_tdo_eventScreen;
-    TH1D* h_bcid_eventScreen;
+    TH1D* h_channel_event;
+    TH1D* h_pdo_event;
+    TH1D* h_tdo_event;
+    TH1D* h_bcid_event;
 
     TH1D* h_channel_statistics;
     TH1D* h_pdo_statistics;
