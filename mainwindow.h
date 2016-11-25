@@ -48,6 +48,8 @@ private:
     std::vector<QString> config_row;
     QTimer* update_timer;
 
+    bool isPaused=false;
+
 private slots:
     void openUdpConnection();
     void createCanvas();
@@ -75,5 +77,6 @@ private slots:
     void on_showStatisticsCheckBox_stateChanged(int arg1);
     void on_showEventCheckBox_stateChanged(int arg1);
     void on_b_Reset_released();
+    void on_b_Pause_released();
 };
 #endif // MAINWINDOW_H

@@ -38,7 +38,9 @@ void MainWindow::readUdpPacketData(){
                                         &fromIP);
 
         QString input = QString(incomingDatagram);
-        writeDataSimple(input);
+
+        if(!isPaused)
+               writeDataSimple(input);
     } // while
     eventCount++;
 }
@@ -133,6 +135,8 @@ Option 2) This is for optimizing for high rates.
         debug("in config");
         if(tmp_list1=="start")
         {
+            ui->l_configd->setText("<font color='red'>NOT configured!</font>");
+
             resetAllHistos();//to prepare for new config
             ui->setupTreeWidget->clear();
             chambers.clear();
@@ -149,9 +153,7 @@ Option 2) This is for optimizing for high rates.
             startCanvasUpdates();
             treeSelectionChanged();//trigger this to setup correctly
 
-//            ui->l_configd->setText("Is configured!");
             ui->l_configd->setText("<font color='green'>Is configured!</font>");
-
 
             isConfigured = true;
             //            for(std::vector<QString> c: config_table)
@@ -385,7 +387,6 @@ void MainWindow::resetAllHistos()
     for(Chip *c: chips)
         c->resetAllHistos();
 }
-
 /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
 void MainWindow::startCanvasUpdates()
 {
@@ -477,10 +478,8 @@ void MainWindow::debug(QString s)
     if(debugMode)
         qDebug() << s;
 }
-
 /// WHATEVERS -------------------------------------------------------------------------------------------------------------
 //MainWindow::~MainWindow() {delete ui;}
-
 void MainWindow::on_showStatisticsCheckBox_stateChanged(int arg1)
 {
     if(ui->showStatisticsCheckBox->isChecked())
@@ -498,4 +497,18 @@ void MainWindow::on_showEventCheckBox_stateChanged(int arg1)
 void MainWindow::on_b_Reset_released()
 {
     resetAllHistos();
+}
+void MainWindow::on_b_Pause_released()
+{
+    if(isPaused)
+    {
+        isPaused = false;
+        ui->b_Pause->setText("Pause");
+    }
+    else
+    {
+        isPaused = true;
+        ui->b_Pause->setText("Resume");
+    }
+
 }
