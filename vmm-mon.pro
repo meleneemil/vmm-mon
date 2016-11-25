@@ -20,7 +20,7 @@ LIBS += -L$(ROOTSYS)/lib -lCore -lCint -lRIO -lNet \
         -lHist -lGraf -lGraf3d -lGpad -lTree \
         -lRint -lPostscript -lMatrix -lPhysics \
         -lGui \
-        -lRIO -lNet -lHist -lTree -lMatrix -lProof -lThread -lCore -lCint -lMathCore  -lTree -lm -ldl  -rdynamic
+        -lRIO -lNet -lHist -lTree -lMatrix -lProof -lThread -lCore -lCint -lMathCore  -lTree -lm -ldl -rdynamic
 
 
 SOURCES += main.cpp\
@@ -35,3 +35,8 @@ HEADERS  += mainwindow.h \
     chip.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES +=
+
+RESOURCES += \
+    logo.qrc
