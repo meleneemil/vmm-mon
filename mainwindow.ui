@@ -72,6 +72,9 @@
     <property name="text">
      <string>Statistics Canvas</string>
     </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QCheckBox" name="showEventCheckBox">
     <property name="geometry">
@@ -85,11 +88,17 @@
     <property name="text">
      <string>Event display Canvas</string>
     </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+    <property name="tristate">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="b_Reset">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>100</x>
       <y>360</y>
       <width>131</width>
       <height>22</height>
@@ -121,9 +130,9 @@
    <widget class="QLabel" name="l_configd">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>100</x>
       <y>333</y>
-      <width>171</width>
+      <width>131</width>
       <height>21</height>
      </rect>
     </property>

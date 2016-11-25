@@ -133,7 +133,7 @@ Option 2) This is for optimizing for high rates.
         debug("in config");
         if(tmp_list1=="start")
         {
-            clearAllHistos();//to prepare for new config
+            resetAllHistos();//to prepare for new config
             ui->setupTreeWidget->clear();
             chambers.clear();
             chips.clear();
@@ -148,6 +148,10 @@ Option 2) This is for optimizing for high rates.
             setupConfigLists();
             startCanvasUpdates();
             treeSelectionChanged();//trigger this to setup correctly
+
+//            ui->l_configd->setText("Is configured!");
+            ui->l_configd->setText("<font color='green'>Is configured!</font>");
+
 
             isConfigured = true;
             //            for(std::vector<QString> c: config_table)
@@ -374,12 +378,12 @@ void MainWindow::drawSelectedItems()
     }
 
 }
-void MainWindow::clearAllHistos()
+void MainWindow::resetAllHistos()
 {
     for(Chamber *c: chambers)
-        c->clearAllHistos();
+        c->resetAllHistos();
     for(Chip *c: chips)
-        c->clearAllHistos();
+        c->resetAllHistos();
 }
 
 /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
@@ -412,7 +416,7 @@ void MainWindow::treeSelectionChanged()
     //if list is empty, draw everything
     if(list.size()==0)
     {
-        qDebug() << "Empty tree selection";
+        //qDebug() << "Empty tree selection";
         canvas_size_in_y = chips.size();
         canvas_size_in_x = Chip::getNoOfStatisticsHistos();
     }
@@ -476,3 +480,22 @@ void MainWindow::debug(QString s)
 
 /// WHATEVERS -------------------------------------------------------------------------------------------------------------
 //MainWindow::~MainWindow() {delete ui;}
+
+void MainWindow::on_showStatisticsCheckBox_stateChanged(int arg1)
+{
+    if(ui->showStatisticsCheckBox->isChecked())
+        c_main->show();
+    else
+        c_main->hide();
+}
+void MainWindow::on_showEventCheckBox_stateChanged(int arg1)
+{
+    if(ui->showEventCheckBox->isChecked())
+        c_event->show();
+    else
+        c_event->hide();
+}
+void MainWindow::on_b_Reset_released()
+{
+    resetAllHistos();
+}

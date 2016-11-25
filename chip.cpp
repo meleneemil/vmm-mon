@@ -43,18 +43,18 @@ h_tdo_statistics    ->SetFillColor(kGreen);
 
 }
 
-void Chip::clearAllHistos()
+void Chip::resetAllHistos()
 {
 
-    h_channel_eventScreen->Clear();
-    h_pdo_eventScreen->Clear();
-    h_tdo_eventScreen->Clear();
-    h_bcid_eventScreen->Clear();
+    h_channel_eventScreen->Reset();
+    h_pdo_eventScreen->Reset();
+    h_tdo_eventScreen->Reset();
+    h_bcid_eventScreen->Reset();
 
-    h_channel_statistics->Clear();
-    h_pdo_statistics->Clear();
-    h_tdo_statistics->Clear();
-    h_bcid_statistics->Clear();
+    h_channel_statistics->Reset();
+    h_pdo_statistics->Reset();
+    h_tdo_statistics->Reset();
+    h_bcid_statistics->Reset();
 }
 
 QString Chip::getName()

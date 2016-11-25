@@ -13,19 +13,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = appWindow
 TEMPLATE = app
-LIBS += -L/home/ak/boost_1_60_0/stage/lib -lboost_thread -lboost_filesystem -lboost_system -lrt
+#LIBS += -L/home/ak/boost_1_60_0/stage/lib -lboost_thread -lboost_filesystem -lboost_system -lrt
 
 
-boostinclude="/home/ak/boost_1_60_0/"
-INCLUDEPATH+=$$boostinclude
+#boostinclude="/home/ak/boost_1_60_0/"
+#INCLUDEPATH+=$$boostinclude
 
-INCLUDEPATH += /home/ak/ROOT534/include
-win32:LIBS += -L/home/ak/ROOT534/lib -llibCint -llibRIO -llibNet \
-        -llibHist -llibGraf -llibGraf3d -llibGpad -llibTree \
-        -llibRint -llibPostscript -llibMatrix -llibPhysics \
-        -llibGui -llibMathCore \
-        -Llib -lRIO -lNet -lHist -lTree -lMatrix -lProof -lThread -lCore -lCint -lMathCore  -lTree -lm -ldl -lrt  -pthread   -rdynamic -g
-else:LIBS += -L/home/ak/ROOT534/lib -lCore -lCint -lRIO -lNet \
+INCLUDEPATH += $(ROOTSYS)/include
+LIBS += -L$(ROOTSYS)/lib -lCore -lCint -lRIO -lNet \
         -lHist -lGraf -lGraf3d -lGpad -lTree \
         -lRint -lPostscript -lMatrix -lPhysics \
         -lGui -lMathCore \

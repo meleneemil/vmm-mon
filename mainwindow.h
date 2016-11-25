@@ -60,7 +60,7 @@ private slots:
     /// DRAWING FUNCTIONS
     void drawAllChips();
     void drawSelectedItems();
-    void clearAllHistos();
+    void resetAllHistos();
     /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
     void startCanvasUpdates();
     void stopCanvasUpdates();
@@ -72,5 +72,8 @@ private slots:
     Chip* findChip(QString);
     void printInfo();
     void debug(QString);
+    void on_showStatisticsCheckBox_stateChanged(int arg1);
+    void on_showEventCheckBox_stateChanged(int arg1);
+    void on_b_Reset_released();
 };
 #endif // MAINWINDOW_H

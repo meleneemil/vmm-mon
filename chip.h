@@ -33,7 +33,7 @@ public:
     TH1D *getH_tdo_eventScreen() const;
     TH1D *getH_bcid_eventScreen() const;
 
-    void clearAllHistos();
+    void resetAllHistos();
 
 private:
     Chamber *parent_chamber;
