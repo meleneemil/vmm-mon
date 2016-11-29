@@ -36,7 +36,10 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-DISTFILES +=
-
 RESOURCES += \
     logo.qrc
+
+unix:MOC_DIR = build
+unix:OBJECTS_DIR = build
+unix:RCC_DIR = build
+unix:UI_DIR = build
