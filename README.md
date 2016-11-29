@@ -5,8 +5,8 @@ Qt application to monitor VMM chips, through the DAQ software found at https://g
 
 ## Pre-requisites:
 
-Qt 5.5 or greater
-ROOT 5.34
+1. Qt 5.5 or greater
+2. ROOT 5.34
 
 ## Installation:
 
