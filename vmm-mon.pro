@@ -7,7 +7,7 @@
 #Simple monitoring of VMM DAQ.
 #Aimilianos Koulouris.
 
-QT       += core gui network
+QT+= core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QMAKE_CXXFLAGS += -std=c++11
@@ -15,31 +15,39 @@ TARGET = vmm-mon
 TEMPLATE = app
 
 INCLUDEPATH += $(ROOTSYS)/include
+INCLUDEPATH += src
+INCLUDEPATH += src/root
+INCLUDEPATH += src/struct
+INCLUDEPATH += src/rsc
 
-LIBS += -L$(ROOTSYS)/lib -lCore -lCint -lRIO -lNet \
-        -lHist -lGraf -lGraf3d -lGpad -lTree \
-        -lRint -lPostscript -lMatrix -lPhysics \
-        -lGui \
-        -lRIO -lNet -lHist -lTree -lMatrix -lProof -lThread -lCore -lCint -lMathCore  -lTree -lm -ldl -rdynamic
+LIBS += -L$(ROOTSYS)/lib \
+    -lCore -lCint -lRIO -lNet \
+    -lHist -lGraf -lGraf3d -lGpad -lTree \
+    -lRint -lPostscript -lMatrix -lPhysics \
+    -lGui \
+    -lProof -lThread -lMathCore -lm -ldl -rdynamic
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    canvas.cxx \
-    chamber.cpp \
-    chip.cpp
+SOURCES +=\
+    src/main.cpp\
+    src/mainwindow.cpp\
+    src/root/canvas.cxx\
+    src/struct/chamber.cpp\
+    src/struct/chip.cpp
 
-HEADERS  += mainwindow.h \
-    canvas.h \
-    chamber.h \
-    chip.h
+HEADERS +=\
+    src/mainwindow.h \
+    src/root/canvas.h \
+    src/struct/chamber.h \
+    src/struct/chip.h
 
-FORMS    += mainwindow.ui
+FORMS += src/mainwindow.ui
 
 RESOURCES += \
-    logo.qrc
+    src/rsc/logo.qrc
 
 unix:MOC_DIR = build
 unix:OBJECTS_DIR = build
 unix:RCC_DIR = build
 unix:UI_DIR = build
+
