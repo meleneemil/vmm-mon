@@ -1,19 +1,19 @@
-#vmm-mon
+# vmm-mon
 contact: aikoulou@cern.ch
 
 Qt application to monitor VMM chips, through the DAQ software found at https://gitlab.cern.ch/NSWelectronics/vmm_readout_software
 
-##Pre-requisites:
+## Pre-requisites:
 
 Qt 5.5 or greater
 ROOT 5.34
 
-##Installation:
+## Installation:
 
 qmake vmm-mon.pro
 make
 
-##Use:
+## Use:
 
 ./vmm-mon
 
@@ -21,7 +21,7 @@ After this, the software expects some Configuration messages, the format of whic
 This is taken care of by the VMMDAQ or your software.
 A label will indicate that the monitoring is configured, and is ready to receive data.
 
-##Configuration:
+## Configuration:
 
 The following string messages show one config cycle:
 
@@ -37,7 +37,7 @@ Each VMM name must be different.
 
 Sending configuration resets the histograms
 
-##Data format
+## Data format
 
 Data is sent again as string messages.
 
