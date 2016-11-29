@@ -1,4 +1,5 @@
 # vmm-mon
+---
 contact: **aikoulou@cern.ch**
 
 Qt application to monitor VMM chips, through the DAQ software found at https://gitlab.cern.ch/NSWelectronics/vmm_readout_software
