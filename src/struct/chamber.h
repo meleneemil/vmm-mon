@@ -32,6 +32,7 @@ public:
     TH1D *getH_bcid_event() const;
 
     void resetAllHistos();
+    void deleteAllHistos();
 
 
 private:

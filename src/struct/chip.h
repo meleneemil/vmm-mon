@@ -34,6 +34,7 @@ public:
     TH1D *getH_bcid_eventScreen() const;
 
     void resetAllHistos();
+    void deleteAllHistos();
 
 private:
     Chamber *parent_chamber;

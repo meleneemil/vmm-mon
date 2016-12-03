@@ -57,6 +57,20 @@ void Chip::resetAllHistos()
     h_bcid_statistics->Reset();
 }
 
+void Chip::deleteAllHistos()
+{
+
+    h_channel_eventScreen->Delete();
+    h_pdo_eventScreen->Delete();
+    h_tdo_eventScreen->Delete();
+    h_bcid_eventScreen->Delete();
+
+    h_channel_statistics->Delete();
+    h_pdo_statistics->Delete();
+    h_tdo_statistics->Delete();
+    h_bcid_statistics->Delete();
+}
+
 QString Chip::getName()
 {
     return name;

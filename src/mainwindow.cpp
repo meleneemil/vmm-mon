@@ -134,7 +134,7 @@ Option 2) This is for optimizing for high rates.
         {
             ui->l_configd->setText("<font color='red'>NOT configured!</font>");
 
-            resetAllHistos();//to prepare for new config
+            deleteAllHistos();//to prepare for new config
             ui->setupTreeWidget->clear();
             chambers.clear();
             chips.clear();
@@ -380,6 +380,13 @@ void MainWindow::resetAllHistos()
         c->resetAllHistos();
     for(Chip *c: chips)
         c->resetAllHistos();
+}
+void MainWindow::deleteAllHistos()
+{
+    for(Chamber *c: chambers)
+        c->deleteAllHistos();
+    for(Chip *c: chips)
+        c->deleteAllHistos();
 }
 /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
 void MainWindow::startCanvasUpdates()

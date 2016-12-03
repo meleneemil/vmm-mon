@@ -59,6 +59,21 @@ void Chamber::resetAllHistos()
 
 }
 
+void Chamber::deleteAllHistos()
+{
+
+    h_channel_event->Delete();
+    h_pdo_event->Delete();
+    h_tdo_event->Delete();
+    h_bcid_event->Delete();
+
+    h_channel_statistics->Delete();
+    h_pdo_statistics->Delete();
+    h_tdo_statistics->Delete();
+    h_bcid_statistics->Delete();
+
+}
+
 QString Chamber::getName()
 {
     return name;

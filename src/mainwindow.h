@@ -67,6 +67,7 @@ private slots:
     void drawAllChips();
     void drawSelectedItems();
     void resetAllHistos();
+    void deleteAllHistos();
     /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
     void startCanvasUpdates();
     void stopCanvasUpdates();
