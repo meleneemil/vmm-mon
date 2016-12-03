@@ -391,17 +391,36 @@ void MainWindow::deleteAllHistos()
 /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
 void MainWindow::startCanvasUpdates()
 {
-    update_timer = new QTimer();
-    connect(update_timer, SIGNAL(timeout()), this, SLOT(updatePads()));
-    update_timer->start(1000);
+//    update_timer = new QTimer();
+//    connect(update_timer, SIGNAL(timeout()), this, SLOT(updatePads()));
+//    update_timer->start(1000);
+    //---------------------------------------
+    mainC_update_timer = new QTimer();
+    connect(mainC_update_timer, SIGNAL(timeout()), this, SLOT(mainC_updatePads()));
+    mainC_update_timer->start(1000);
+//    //---------------------------------------
+    eventC_update_timer = new QTimer();
+    connect(eventC_update_timer, SIGNAL(timeout()), this, SLOT(eventC_updatePads()));
+    eventC_update_timer->start(500);
 
-}void MainWindow::stopCanvasUpdates()
+}
+void MainWindow::stopCanvasUpdates()
 {
-    update_timer->stop();
+//    update_timer->stop();
+    mainC_update_timer->stop();
+    eventC_update_timer->stop();
 }
 void MainWindow::updatePads()
 {
     c_main->ModAndUpd_Pads();
+    c_event->ModAndUpd_Pads();
+}
+void MainWindow::mainC_updatePads()
+{
+    c_main->ModAndUpd_Pads();
+}
+void MainWindow::eventC_updatePads()
+{
     c_event->ModAndUpd_Pads();
 }
 /// UI CONTROL ---------------------------------------------------------------------------------------------

@@ -51,6 +51,8 @@ private:
     std::vector<std::vector<QString>> config_table;
     std::vector<QString> config_row;
     QTimer* update_timer;
+    QTimer* mainC_update_timer;
+    QTimer* eventC_update_timer;
 
     bool isPaused=false;
 
@@ -72,6 +74,8 @@ private slots:
     void startCanvasUpdates();
     void stopCanvasUpdates();
     void updatePads();
+    void mainC_updatePads();
+    void eventC_updatePads();
     /// UI CONTROL ---------------------------------------------------------------------------------------------
     void treeSelectionChanged();
     /// TOOLS --------------------------------------------
