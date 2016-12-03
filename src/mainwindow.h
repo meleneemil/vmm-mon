@@ -15,6 +15,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QTimer>
+#include <QCloseEvent>
 
 namespace Ui {
 class MainWindow;
@@ -26,9 +27,9 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow(){delete ui;};
 
 private:
+    void closeEvent(QCloseEvent *bar){exit(0);};
     Ui::MainWindow *ui;
 
     QUdpSocket *m_socket_receiver;
