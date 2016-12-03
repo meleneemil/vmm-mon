@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     openUdpConnection();
     createCanvas();
+
 }
 /// UDP SETUP ------------------------------------------------------------------------------------------------------------
 void MainWindow::openUdpConnection()
@@ -28,19 +29,15 @@ void MainWindow::openUdpConnection()
 }
 void MainWindow::readUdpPacketData(){
 
-    QHostAddress fromIP;
-    QByteArray incomingDatagram;
-
-    while(m_socket_receiver->hasPendingDatagrams()) {
+    while(m_socket_receiver->hasPendingDatagrams())
+    {
         incomingDatagram.resize(m_socket_receiver->pendingDatagramSize());
         m_socket_receiver->readDatagram(incomingDatagram.data(),
                                         incomingDatagram.size(),
                                         &fromIP);
 
-        QString input = QString(incomingDatagram);
-
         if(!isPaused)
-               writeDataSimple(input);
+               writeDataSimple(QString(incomingDatagram));
     } // while
     eventCount++;
 }
@@ -227,9 +224,6 @@ void MainWindow::setupConfigLists()
 }
 void MainWindow::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, int bcid)
 {
-    //    qDebug() << "TRIG = "<<trig_cnt;
-
-
     fill_counter++;
     for(Chip* c: chips)
     {
@@ -392,7 +386,7 @@ void MainWindow::startCanvasUpdates()
 {
     update_timer = new QTimer();
     connect(update_timer, SIGNAL(timeout()), this, SLOT(updatePads()));
-    update_timer->start(1000);
+    update_timer->start(500);
 
 }void MainWindow::stopCanvasUpdates()
 {
@@ -511,4 +505,9 @@ void MainWindow::on_b_Pause_released()
         ui->b_Pause->setText("Resume");
     }
 
+}
+
+void MainWindow::on_b_clearTreeSelection_released()
+{
+    ui->setupTreeWidget->clearSelection();
 }

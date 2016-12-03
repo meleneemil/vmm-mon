@@ -33,6 +33,9 @@ private:
     Ui::MainWindow *ui;
 
     QUdpSocket *m_socket_receiver;
+
+    QHostAddress fromIP;
+    QByteArray incomingDatagram;
     int eventCount;
     int canvas_size_in_y;
     int canvas_size_in_x;
@@ -79,5 +82,6 @@ private slots:
     void on_showEventCheckBox_stateChanged(int arg1);
     void on_b_Reset_released();
     void on_b_Pause_released();
+    void on_b_clearTreeSelection_released();
 };
 #endif // MAINWINDOW_H
