@@ -386,7 +386,7 @@ void MainWindow::startCanvasUpdates()
 {
     update_timer = new QTimer();
     connect(update_timer, SIGNAL(timeout()), this, SLOT(updatePads()));
-    update_timer->start(500);
+    update_timer->start(1000);
 
 }void MainWindow::stopCanvasUpdates()
 {
