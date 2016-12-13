@@ -15,7 +15,7 @@ TEMPLATE = app
 
 INCLUDEPATH += $(ROOTSYS)/include
 INCLUDEPATH += src
-INCLUDEPATH += src/root
+#INCLUDEPATH += src/root
 INCLUDEPATH += src/struct
 INCLUDEPATH += src/rsc
 
@@ -28,13 +28,13 @@ LIBS += -L$(ROOTSYS)/lib \
 SOURCES +=\
     src/main.cpp\
     src/mainwindow.cpp\
-    src/root/canvas.cxx\
+#    src/root/canvas.cxx\
     src/struct/chamber.cpp\
     src/struct/chip.cpp
 
 HEADERS +=\
     src/mainwindow.h \
-    src/root/canvas.h \
+#    src/root/canvas.h \
     src/struct/chamber.h \
     src/struct/chip.h
 

@@ -3,7 +3,7 @@
 //local
 #include "chamber.h"
 #include "chip.h"
-#include "canvas.h"
+//#include "canvas.h"
 #include "chip.h"
 #include "chamber.h"
 //QT includes
@@ -16,7 +16,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QCloseEvent>
-
+#include <TCanvas.h>
 namespace Ui {
 class MainWindow;
 }
@@ -43,8 +43,8 @@ private:
     bool debugMode;
     std::vector<Chamber*> chambers;
     std::vector<Chip*> chips;
-    QMainCanvas* c_main;
-    QMainCanvas* c_event;
+    TCanvas* c_main;
+    TCanvas* c_event;
     int fill_counter;
     int last_trig_cnt;
     QString tmp_list1;

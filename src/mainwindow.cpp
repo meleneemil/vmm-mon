@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <TSystem.h>
 #include "ui_mainwindow.h"
 MainWindow::MainWindow(QWidget *parent) :
     debugMode(0),
@@ -45,40 +46,22 @@ void MainWindow::readUdpPacketData(){
 void MainWindow::createCanvas()
 {
     //just initializing 2 canvases (statistics+event display)
-    c_main = new QMainCanvas();
-    c_main->resize(c_main->sizeHint());
-    c_main->setWindowTitle("vmm-mon Statistics");
-    c_main->setGeometry( 100, 100, 700, 500 );
-    c_main->show();
+    c_main = new TCanvas("main canvas");
+//    c_main->Resize(c_main->sizeh());
+//    c_main->etWindowTitle("vmm-mon Statistics");
+//    c_main->setGeometry( 100, 100, 700, 500 );
+//    c_main->Show();
 
-    c_event = new QMainCanvas();
-    c_event->resize(c_event->sizeHint());
-    c_event->setWindowTitle("vmm-mon Event Display");
-    c_event->setGeometry( 150, 150, 700, 500 );
-    c_event->show();
+    c_event = new TCanvas("stat canvas");
+//    c_event->resize(c_event->sizeHint());
+//    c_event->setWindowTitle("vmm-mon Event Display");
+//    c_event->setGeometry( 150, 150, 700, 500 );
+//    c_event->Show();
 
 }
 void MainWindow::setupCanvas()
 {
-    ///Divide dimensions are init'd here, and adjusted in treeSelectionChanged()
-    //the canvas will have a line for every chip,board,or chamber
-    //from the selected ones
-    //    canvas_size_in_y = chips.size();
-    //this is probably 4 for chips,boards, or chambers...to be seen
-    //    canvas_size_in_x = Chip::getNoOfStatisticsHistos();
 
-    //the histograms are created in the Chip class
-    //since each of them refers to a chip
-    //no functionality yet for histograms per chamber
-
-    //let's make one canvas to rule them all
-    //this canvas will be defined by what is selected in the gui
-    //each line can be a chip, a board, a chamber
-
-    //chip   :         hitmap,pdo,tdo,bcid + eventDisplay on itself
-    //board  :combined hitmap,pdo,tdo,bcid + eventDisplay on itself
-    //chamber:combined hitmap,pdo,tdo,bcid + eventDisplay on itself
-    //so, each item=line will have 4 histos (dual, with the eventDisplay)
     c_main->Divide(canvas_size_in_x,canvas_size_in_y);
     c_event->Divide(canvas_size_in_x,canvas_size_in_y);
 
@@ -90,8 +73,6 @@ void MainWindow::setupCanvas()
     {
         drawSelectedItems();
     }
-
-
 
 }
 /// DATA HANDLING ------------------------------------------------------------------------------------------------------------
@@ -397,39 +378,61 @@ void MainWindow::startCanvasUpdates()
     //---------------------------------------
     mainC_update_timer = new QTimer();
     connect(mainC_update_timer, SIGNAL(timeout()), this, SLOT(mainC_updatePads()));
-    mainC_update_timer->start(10);
+    mainC_update_timer->start(1000);
 //    //---------------------------------------
-    eventC_update_timer = new QTimer();
-    connect(eventC_update_timer, SIGNAL(timeout()), this, SLOT(eventC_updatePads()));
-    eventC_update_timer->start(5);
+//    eventC_update_timer = new QTimer();
+//    connect(eventC_update_timer, SIGNAL(timeout()), this, SLOT(eventC_updatePads()));
+//    eventC_update_timer->start(5);
 
 }
 void MainWindow::stopCanvasUpdates()
 {
 //    update_timer->stop();
     mainC_update_timer->stop();
-    eventC_update_timer->stop();
+//    eventC_update_timer->stop();
 }
 void MainWindow::updatePads()
 {
-    c_main->ModAndUpd_Pads();
-    c_event->ModAndUpd_Pads();
+    c_main->Modified();
+    c_main->Update();
+
+//    c_event->ModAndUpd_Pads();
 }
 void MainWindow::mainC_updatePads()
 {
-    c_main->ModAndUpd_Pads();
+    for(int i=1;i<=canvas_size_in_x*canvas_size_in_y;i++)
+       {
+           c_main->cd(i);//pads or i
+           gPad->Modified();
+           gPad->Update();
+       }
+
+//    for(int i=1;i<=noOfPads;i++)
+//       {
+//           c_event->getCanvas()->cd(i);//pads or i
+//           gPad->Modified();
+//           gPad->Update();
+//       }
+
+//    c_main->Modified();
+//    c_main->Update();
+//    c_event->Modified();
+//    c_event->Update();
+    gSystem->ProcessEvents();
 }
 void MainWindow::eventC_updatePads()
 {
-    c_event->ModAndUpd_Pads();
+//    c_event->ModAndUpd_Pads();
+    c_event->Modified();
+    c_event->Update();
 }
 /// UI CONTROL ---------------------------------------------------------------------------------------------
 void MainWindow::treeSelectionChanged()
 {
     ///stop the updates
     stopCanvasUpdates();
-    c_main->clear();
-    c_event->clear();
+    c_main->Clear();
+//    c_event->clear();
 
     //selected items list
     QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
@@ -503,16 +506,16 @@ void MainWindow::debug(QString s)
 void MainWindow::on_showStatisticsCheckBox_stateChanged(int arg1)
 {
     if(ui->showStatisticsCheckBox->isChecked())
-        c_main->show();
-    else
-        c_main->hide();
+        c_main->Show();
+//    else
+//        c_main->();
 }
 void MainWindow::on_showEventCheckBox_stateChanged(int arg1)
 {
-    if(ui->showEventCheckBox->isChecked())
-        c_event->show();
-    else
-        c_event->hide();
+//    if(ui->showEventCheckBox->isChecked())
+//        c_event->show();
+//    else
+//        c_event->hide();
 }
 void MainWindow::on_b_Reset_released()
 {

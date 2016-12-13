@@ -3,6 +3,7 @@
 #include <TApplication.h>
 #include <TSystem.h>
 #include <QDebug>
+#include <QThread>
 
 int main(int argc, char *argv[])
 {
@@ -12,7 +13,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
-
+//    QThread *thread = new QThread();
+//    rootapp.moveToThread(thread);
+//    thread->start();
+//    gSystem->ProcessEvents();
 //    rootapp.Run();
+//    gSystem->ProcessEvents();
     return a.exec();
 }
