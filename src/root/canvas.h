@@ -10,7 +10,7 @@ class QMouseEvent;
 class QPushButton;
 class QTimer;
 class TCanvas;
-
+/*
 class QRootCanvas : public QWidget
 {
    Q_OBJECT
@@ -29,7 +29,7 @@ protected:
    virtual void    paintEvent( QPaintEvent *e );
    virtual void    resizeEvent( QResizeEvent *e );
 };
-
+*/
 class QMainCanvas : public QWidget
 {
    Q_OBJECT
@@ -37,7 +37,11 @@ class QMainCanvas : public QWidget
 public:
    QMainCanvas( QWidget *parent = 0);
    virtual ~QMainCanvas() {}
-   virtual void changeEvent(QEvent * e);
+   virtual void    mouseMoveEvent( QMouseEvent *e );
+   virtual void    mousePressEvent( QMouseEvent *e );
+   virtual void    mouseReleaseEvent( QMouseEvent *e );
+   virtual void    paintEvent( QPaintEvent *e );
+   virtual void    resizeEvent( QResizeEvent *e );
 
 public slots:
    void handle_root_events();
@@ -47,8 +51,9 @@ public slots:
    void cd(int);
    void clear();
 
+
 protected:
-   QRootCanvas    *canvas;
+   TCanvas    *canvas;
    QTimer         *fRootTimer;
    int noOfPads;
 };

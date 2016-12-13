@@ -1,4 +1,4 @@
-#include <QtWidgets>
+//#include <QtWidgets>
 #include <QtNetwork>
 
 #include <stdlib.h>
@@ -61,6 +61,7 @@ void Server::sendData()
         qstr_bcid     = QString::number(rand()%4096);
         //int n =0                 1             2              3            4            5
         msg =    qstr_trig_cnt+" "+qstr_chip+" "+qstr_strip+" "+qstr_pdo+" "+qstr_tdo+" "+qstr_bcid;
+//msg+ =    " "+qstr_trig_cnt+" "+qstr_chip+" "+qstr_strip+" "+qstr_pdo+" "+qstr_tdo+" "+qstr_bcid;
 
         data=msg.toStdString().c_str();
         m_socket_sender->writeDatagram(data, QHostAddress::LocalHost, 2224);

@@ -397,11 +397,11 @@ void MainWindow::startCanvasUpdates()
     //---------------------------------------
     mainC_update_timer = new QTimer();
     connect(mainC_update_timer, SIGNAL(timeout()), this, SLOT(mainC_updatePads()));
-    mainC_update_timer->start(1000);
+    mainC_update_timer->start(10);
 //    //---------------------------------------
     eventC_update_timer = new QTimer();
     connect(eventC_update_timer, SIGNAL(timeout()), this, SLOT(eventC_updatePads()));
-    eventC_update_timer->start(500);
+    eventC_update_timer->start(5);
 
 }
 void MainWindow::stopCanvasUpdates()
