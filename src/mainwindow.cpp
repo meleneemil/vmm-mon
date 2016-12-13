@@ -407,12 +407,12 @@ void MainWindow::mainC_updatePads()
            gPad->Update();
        }
 
-//    for(int i=1;i<=noOfPads;i++)
-//       {
-//           c_event->getCanvas()->cd(i);//pads or i
-//           gPad->Modified();
-//           gPad->Update();
-//       }
+    for(int i=1;i<=canvas_size_in_x*canvas_size_in_y;i++)
+       {
+           c_event->cd(i);//pads or i
+           gPad->Modified();
+           gPad->Update();
+       }
 
 //    c_main->Modified();
 //    c_main->Update();
@@ -432,7 +432,7 @@ void MainWindow::treeSelectionChanged()
     ///stop the updates
     stopCanvasUpdates();
     c_main->Clear();
-//    c_event->clear();
+    c_event->Clear();
 
     //selected items list
     QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
@@ -505,8 +505,8 @@ void MainWindow::debug(QString s)
 //MainWindow::~MainWindow() {delete ui;}
 void MainWindow::on_showStatisticsCheckBox_stateChanged(int arg1)
 {
-    if(ui->showStatisticsCheckBox->isChecked())
-        c_main->Show();
+//    if(ui->showStatisticsCheckBox->isChecked())
+//        c_main->Show();
 //    else
 //        c_main->();
 }
