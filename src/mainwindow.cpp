@@ -159,6 +159,7 @@ Option 2) This is for optimizing for high rates.
         }
         else
         {
+
             //size must be a multiple of 6!!
             for(int i=0;i<list.size();i+=6)
             {
