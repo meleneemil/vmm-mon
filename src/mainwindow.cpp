@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <TSystem.h>
 #include "ui_mainwindow.h"
 MainWindow::MainWindow(QWidget *parent) :
     debugMode(0),
@@ -45,40 +46,22 @@ void MainWindow::readUdpPacketData(){
 void MainWindow::createCanvas()
 {
     //just initializing 2 canvases (statistics+event display)
-    c_main = new QMainCanvas();
-    c_main->resize(c_main->sizeHint());
-    c_main->setWindowTitle("vmm-mon Statistics");
-    c_main->setGeometry( 100, 100, 700, 500 );
-    c_main->show();
+    c_main = new TCanvas("main canvas");
+    //    c_main->Resize(c_main->sizeh());
+    //    c_main->etWindowTitle("vmm-mon Statistics");
+    //    c_main->setGeometry( 100, 100, 700, 500 );
+    //    c_main->Show();
 
-    c_event = new QMainCanvas();
-    c_event->resize(c_event->sizeHint());
-    c_event->setWindowTitle("vmm-mon Event Display");
-    c_event->setGeometry( 150, 150, 700, 500 );
-    c_event->show();
+    c_event = new TCanvas("stat canvas");
+    //    c_event->resize(c_event->sizeHint());
+    //    c_event->setWindowTitle("vmm-mon Event Display");
+    //    c_event->setGeometry( 150, 150, 700, 500 );
+    //    c_event->Show();
 
 }
 void MainWindow::setupCanvas()
 {
-    ///Divide dimensions are init'd here, and adjusted in treeSelectionChanged()
-    //the canvas will have a line for every chip,board,or chamber
-    //from the selected ones
-    //    canvas_size_in_y = chips.size();
-    //this is probably 4 for chips,boards, or chambers...to be seen
-    //    canvas_size_in_x = Chip::getNoOfStatisticsHistos();
 
-    //the histograms are created in the Chip class
-    //since each of them refers to a chip
-    //no functionality yet for histograms per chamber
-
-    //let's make one canvas to rule them all
-    //this canvas will be defined by what is selected in the gui
-    //each line can be a chip, a board, a chamber
-
-    //chip   :         hitmap,pdo,tdo,bcid + eventDisplay on itself
-    //board  :combined hitmap,pdo,tdo,bcid + eventDisplay on itself
-    //chamber:combined hitmap,pdo,tdo,bcid + eventDisplay on itself
-    //so, each item=line will have 4 histos (dual, with the eventDisplay)
     c_main->Divide(canvas_size_in_x,canvas_size_in_y);
     c_event->Divide(canvas_size_in_x,canvas_size_in_y);
 
@@ -90,8 +73,6 @@ void MainWindow::setupCanvas()
     {
         drawSelectedItems();
     }
-
-
 
 }
 /// DATA HANDLING ------------------------------------------------------------------------------------------------------------
@@ -172,9 +153,9 @@ Option 2) This is for optimizing for high rates.
     {
         //old format, simplified
 
-        if(list.size()%6 != 0)
+        if(list.size()%6!=0)
         {
-            qDebug() << "strange packets from DAQ";
+            qDebug() << "strange daq packet";
         }
         else
         {
@@ -189,357 +170,379 @@ Option 2) This is for optimizing for high rates.
                      list.at(i+5).toInt()
                      );
             }
-
-        }//else if (normal packets)
-    }
-    void MainWindow::setupConfigLists()
-    {
-
-        for(std::vector<QString> configLine: config_table)
-        {
-
-            Chamber *tempchamber = new Chamber(configLine.at(0),configLine.size()-1);
-            QTreeWidgetItem *chamber_item=new QTreeWidgetItem((QTreeWidget*)0, QStringList(configLine.at(0)));
-
-            for(int i=1;i<configLine.size();i++)
-            {//start from 1, because 0 was the chamber name
-
-                //see Chip constructor
-                //we give it its name
-                //pointer to its parent chamber
-                //its index in the parent, to merge vmms
-                Chip* c = new Chip(configLine.at(i),tempchamber,i-1);
-                chips.push_back(c);
-
-                //make tree item children
-                //and add them to the chamber item
-                QTreeWidgetItem *chip_item=new QTreeWidgetItem((QTreeWidget*)0, QStringList(configLine.at(i)));
-                chamber_item->addChild(chip_item);
-
-
-            }//for each name in configLine, except the first
-
-            //add the chamber item, with its children to the tree
-            ui->setupTreeWidget->insertTopLevelItem(0, chamber_item);
-
-            chambers.push_back(tempchamber);
-        }//for each configLine (each chamber)
-
-        //    printInfo();
-
-    }
-    void MainWindow::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, int bcid)
-    {
-        fill_counter++;
-        for(Chip* c: chips)
-        {
-            if(c->getName()==chip)
-            {
-
-                //            qDebug() << "Filling with: "<<chip<<" "<<strip<<" "<<pdo;
-                //now we are in the correct Chip
-                c->getH_channel_statistics()->Fill(strip);
-                c->getH_pdo_statistics()->Fill(pdo);
-                c->getH_tdo_statistics()->Fill(tdo);
-                c->getH_bcid_statistics()->Fill(bcid);
-
-                //also fill the parent of the chip
-                c->getParent()->getH_channel_statistics()->Fill(strip+64*c->getIndex());
-                c->getParent()->getH_pdo_statistics()->Fill(pdo);
-                c->getParent()->getH_tdo_statistics()->Fill(tdo);
-                c->getParent()->getH_bcid_statistics()->Fill(bcid);
-
-                //            qDebug() << "trig = "<<trig_cnt<<" // last_trig = "<<last_trig_cnt;
-                //also fill the event display histos (and reset if new event)
-                if(!(trig_cnt == last_trig_cnt))
-                {
-                    //                qDebug() << "Resetting";
-                    c->getH_channel_eventScreen()->Reset();
-                    c->getH_pdo_eventScreen()    ->Reset();
-                    c->getH_tdo_eventScreen()    ->Reset();
-                    c->getH_bcid_eventScreen()   ->Reset();
-
-                    c->getParent()->getH_channel_event()->Reset();
-                    c->getParent()->getH_pdo_event()    ->Reset();
-                    c->getParent()->getH_tdo_event()    ->Reset();
-                    c->getParent()->getH_bcid_event()   ->Reset();
-                    //             last_trig_cnt = trig_cnt;
-                }
-                c->getH_channel_eventScreen()-> Fill(strip);
-                c->getH_pdo_eventScreen()    -> Fill(pdo);
-                c->getH_tdo_eventScreen()    -> Fill(tdo);
-                c->getH_bcid_eventScreen()   -> Fill(bcid);
-
-                c->getParent()->getH_channel_event()->Fill(strip+64*c->getIndex());
-                c->getParent()->getH_pdo_event()->Fill(pdo);
-                c->getParent()->getH_tdo_event()->Fill(tdo);
-                c->getParent()->getH_bcid_event()->Fill(bcid);
-
-
-                //and break, since we do not need to search anymore
-                break;
-            }
-
         }
-        last_trig_cnt=trig_cnt;
-    }
-    /// DRAWING FUNCTIONS ------------------------------------------------
-    void MainWindow::drawAllChips()
+    }//else if (normal packets)
+}
+void MainWindow::setupConfigLists()
+{
+
+    for(std::vector<QString> configLine: config_table)
     {
-        debug(__FUNCTION__);
-        int temp_cd=1;
-        for(Chip *tempChip: chips)
-        {
-            c_main->cd(temp_cd);
-            tempChip->drawChannelStatistics();
-            c_event->cd(temp_cd);
-            tempChip->drawChannelEvent();
-            temp_cd++;
-            c_main->cd(temp_cd);
-            tempChip->drawPdoStatistics();
-            c_event->cd(temp_cd);
-            tempChip->drawPdoEvent();
-            temp_cd++;
-            c_main->cd(temp_cd);
-            tempChip->drawTdoStatistics();
-            c_event->cd(temp_cd);
-            tempChip->drawTdoEvent();
-            temp_cd++;
-            c_main->cd(temp_cd);
-            tempChip->drawBCIDStatistics();
-            c_event->cd(temp_cd);
-            tempChip->drawBCIDEvent();
-            temp_cd++;
-        }
-    }
-    void MainWindow::drawSelectedItems()
+
+        Chamber *tempchamber = new Chamber(configLine.at(0),configLine.size()-1);
+        QTreeWidgetItem *chamber_item=new QTreeWidgetItem((QTreeWidget*)0, QStringList(configLine.at(0)));
+
+        for(int i=1;i<configLine.size();i++)
+        {//start from 1, because 0 was the chamber name
+
+            //see Chip constructor
+            //we give it its name
+            //pointer to its parent chamber
+            //its index in the parent, to merge vmms
+            Chip* c = new Chip(configLine.at(i),tempchamber,i-1);
+            chips.push_back(c);
+
+            //make tree item children
+            //and add them to the chamber item
+            QTreeWidgetItem *chip_item=new QTreeWidgetItem((QTreeWidget*)0, QStringList(configLine.at(i)));
+            chamber_item->addChild(chip_item);
+
+
+        }//for each name in configLine, except the first
+
+        //add the chamber item, with its children to the tree
+        ui->setupTreeWidget->insertTopLevelItem(0, chamber_item);
+
+        chambers.push_back(tempchamber);
+    }//for each configLine (each chamber)
+
+    //    printInfo();
+
+}
+void MainWindow::fill(int trig_cnt, QString chip, int strip, int pdo,int tdo, int bcid)
+{
+    fill_counter++;
+    for(Chip* c: chips)
     {
-        //selected items list
-        QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
-
-        int temp_cd=1;
-        for(QTreeWidgetItem *item: list)
+        if(c->getName()==chip)
         {
-            Chamber *c = findChamber(item->text(0));
-            if(c)
+
+            //            qDebug() << "Filling with: "<<chip<<" "<<strip<<" "<<pdo;
+            //now we are in the correct Chip
+            c->getH_channel_statistics()->Fill(strip);
+            c->getH_pdo_statistics()->Fill(pdo);
+            c->getH_tdo_statistics()->Fill(tdo);
+            c->getH_bcid_statistics()->Fill(bcid);
+
+            //also fill the parent of the chip
+            c->getParent()->getH_channel_statistics()->Fill(strip+64*c->getIndex());
+            c->getParent()->getH_pdo_statistics()->Fill(pdo);
+            c->getParent()->getH_tdo_statistics()->Fill(tdo);
+            c->getParent()->getH_bcid_statistics()->Fill(bcid);
+
+            //            qDebug() << "trig = "<<trig_cnt<<" // last_trig = "<<last_trig_cnt;
+            //also fill the event display histos (and reset if new event)
+            if(!(trig_cnt == last_trig_cnt))
             {
-                c_main->cd(temp_cd);
-                c->drawChannelStatistics();
-                c_event->cd(temp_cd);
-                c->drawChannelEvent();
+                //                qDebug() << "Resetting";
+                c->getH_channel_eventScreen()->Reset();
+                c->getH_pdo_eventScreen()    ->Reset();
+                c->getH_tdo_eventScreen()    ->Reset();
+                c->getH_bcid_eventScreen()   ->Reset();
 
-                temp_cd++;
-                c_main->cd(temp_cd);
-                c->drawPdoStatistics();
-                c_event->cd(temp_cd);
-                c->drawPdoEvent();
-
-                temp_cd++;
-                c_main->cd(temp_cd);
-                c->drawTdoStatistics();
-                c_event->cd(temp_cd);
-                c->drawTdoEvent();
-
-                temp_cd++;
-                c_main->cd(temp_cd);
-                c->drawBCIDStatistics();
-                c_event->cd(temp_cd);
-                c->drawBCIDEvent();
-                temp_cd++;
-
+                c->getParent()->getH_channel_event()->Reset();
+                c->getParent()->getH_pdo_event()    ->Reset();
+                c->getParent()->getH_tdo_event()    ->Reset();
+                c->getParent()->getH_bcid_event()   ->Reset();
+                //             last_trig_cnt = trig_cnt;
             }
-            else
-            {
-                Chip *tempchip = findChip(item->text(0));
+            c->getH_channel_eventScreen()-> Fill(strip);
+            c->getH_pdo_eventScreen()    -> Fill(pdo);
+            c->getH_tdo_eventScreen()    -> Fill(tdo);
+            c->getH_bcid_eventScreen()   -> Fill(bcid);
 
-                c_main->cd(temp_cd);
-                tempchip->drawChannelStatistics();
-                c_event->cd(temp_cd);
-                tempchip->drawChannelEvent();
-                temp_cd++;
+            c->getParent()->getH_channel_event()->Fill(strip+64*c->getIndex());
+            c->getParent()->getH_pdo_event()->Fill(pdo);
+            c->getParent()->getH_tdo_event()->Fill(tdo);
+            c->getParent()->getH_bcid_event()->Fill(bcid);
 
-                c_main->cd(temp_cd);
-                tempchip->drawPdoStatistics();
-                c_event->cd(temp_cd);
-                tempchip->drawPdoEvent();
-                temp_cd++;
 
-                c_main->cd(temp_cd);
-                tempchip->drawTdoStatistics();
-                c_event->cd(temp_cd);
-                tempchip->drawTdoEvent();
-                temp_cd++;
-
-                c_main->cd(temp_cd);
-                tempchip->drawBCIDStatistics();
-                c_event->cd(temp_cd);
-                tempchip->drawBCIDEvent();
-                temp_cd++;
-            }
-
+            //and break, since we do not need to search anymore
+            break;
         }
 
     }
-    void MainWindow::resetAllHistos()
+    last_trig_cnt=trig_cnt;
+}
+/// DRAWING FUNCTIONS ------------------------------------------------
+void MainWindow::drawAllChips()
+{
+    debug(__FUNCTION__);
+    int temp_cd=1;
+    for(Chip *tempChip: chips)
     {
-        for(Chamber *c: chambers)
-            c->resetAllHistos();
-        for(Chip *c: chips)
-            c->resetAllHistos();
+        c_main->cd(temp_cd);
+        tempChip->drawChannelStatistics();
+        c_event->cd(temp_cd);
+        tempChip->drawChannelEvent();
+        temp_cd++;
+        c_main->cd(temp_cd);
+        tempChip->drawPdoStatistics();
+        c_event->cd(temp_cd);
+        tempChip->drawPdoEvent();
+        temp_cd++;
+        c_main->cd(temp_cd);
+        tempChip->drawTdoStatistics();
+        c_event->cd(temp_cd);
+        tempChip->drawTdoEvent();
+        temp_cd++;
+        c_main->cd(temp_cd);
+        tempChip->drawBCIDStatistics();
+        c_event->cd(temp_cd);
+        tempChip->drawBCIDEvent();
+        temp_cd++;
     }
-    void MainWindow::deleteAllHistos()
-    {
-        for(Chamber *c: chambers)
-            c->deleteAllHistos();
-        for(Chip *c: chips)
-            c->deleteAllHistos();
-    }
-    /// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
-    void MainWindow::startCanvasUpdates()
-    {
-        //    update_timer = new QTimer();
-        //    connect(update_timer, SIGNAL(timeout()), this, SLOT(updatePads()));
-        //    update_timer->start(1000);
-        //---------------------------------------
-        mainC_update_timer = new QTimer();
-        connect(mainC_update_timer, SIGNAL(timeout()), this, SLOT(mainC_updatePads()));
-        mainC_update_timer->start(1000);
-        //    //---------------------------------------
-        eventC_update_timer = new QTimer();
-        connect(eventC_update_timer, SIGNAL(timeout()), this, SLOT(eventC_updatePads()));
-        eventC_update_timer->start(500);
+}
+void MainWindow::drawSelectedItems()
+{
+    //selected items list
+    QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
 
-    }
-    void MainWindow::stopCanvasUpdates()
+    int temp_cd=1;
+    for(QTreeWidgetItem *item: list)
     {
-        //    update_timer->stop();
-        mainC_update_timer->stop();
-        eventC_update_timer->stop();
-    }
-    void MainWindow::updatePads()
-    {
-        c_main->ModAndUpd_Pads();
-        c_event->ModAndUpd_Pads();
-    }
-    void MainWindow::mainC_updatePads()
-    {
-        c_main->ModAndUpd_Pads();
-    }
-    void MainWindow::eventC_updatePads()
-    {
-        c_event->ModAndUpd_Pads();
-    }
-    /// UI CONTROL ---------------------------------------------------------------------------------------------
-    void MainWindow::treeSelectionChanged()
-    {
-        ///stop the updates
-        stopCanvasUpdates();
-        c_main->clear();
-        c_event->clear();
-
-        //selected items list
-        QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
-
-        //if list is empty, draw everything
-        if(list.size()==0)
+        Chamber *c = findChamber(item->text(0));
+        if(c)
         {
-            //qDebug() << "Empty tree selection";
-            canvas_size_in_y = chips.size();
-            canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+            c_main->cd(temp_cd);
+            c->drawChannelStatistics();
+            c_event->cd(temp_cd);
+            c->drawChannelEvent();
+
+            temp_cd++;
+            c_main->cd(temp_cd);
+            c->drawPdoStatistics();
+            c_event->cd(temp_cd);
+            c->drawPdoEvent();
+
+            temp_cd++;
+            c_main->cd(temp_cd);
+            c->drawTdoStatistics();
+            c_event->cd(temp_cd);
+            c->drawTdoEvent();
+
+            temp_cd++;
+            c_main->cd(temp_cd);
+            c->drawBCIDStatistics();
+            c_event->cd(temp_cd);
+            c->drawBCIDEvent();
+            temp_cd++;
+
         }
         else
         {
-            //        qDebug() << "SELECTED ITEMS:";
+            Chip *tempchip = findChip(item->text(0));
 
-            //        for(QTreeWidgetItem * s: list)
-            //        {
-            //            if(s->parent())
-            //                qDebug() << s->parent()->text(0) <<" : "<<s->text(0);
-            //            else
-            //                qDebug()<<s->text(0);
-            //        }
+            c_main->cd(temp_cd);
+            tempchip->drawChannelStatistics();
+            c_event->cd(temp_cd);
+            tempchip->drawChannelEvent();
+            temp_cd++;
 
-            //that way we can monitor a board/chamber and a specific chip at the same time
-            canvas_size_in_y = list.size();
-            canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+            c_main->cd(temp_cd);
+            tempchip->drawPdoStatistics();
+            c_event->cd(temp_cd);
+            tempchip->drawPdoEvent();
+            temp_cd++;
+
+            c_main->cd(temp_cd);
+            tempchip->drawTdoStatistics();
+            c_event->cd(temp_cd);
+            tempchip->drawTdoEvent();
+            temp_cd++;
+
+            c_main->cd(temp_cd);
+            tempchip->drawBCIDStatistics();
+            c_event->cd(temp_cd);
+            tempchip->drawBCIDEvent();
+            temp_cd++;
         }
 
-        //redo the setup
-        setupCanvas();
-        ///restart updates
-        startCanvasUpdates();
     }
-    /// TOOLS ----------------------------------------------------------------------------------------------------------------
-    Chamber* MainWindow::findChamber(QString chname)
+
+}
+void MainWindow::resetAllHistos()
+{
+    for(Chamber *c: chambers)
+        c->resetAllHistos();
+    for(Chip *c: chips)
+        c->resetAllHistos();
+}
+void MainWindow::deleteAllHistos()
+{
+    for(Chamber *c: chambers)
+        c->deleteAllHistos();
+    for(Chip *c: chips)
+        c->deleteAllHistos();
+}
+/// CANVAS UPDATE CONTROL --------------------------------------------------------------------------------------------------
+void MainWindow::startCanvasUpdates()
+{
+    //    update_timer = new QTimer();
+    //    connect(update_timer, SIGNAL(timeout()), this, SLOT(updatePads()));
+    //    update_timer->start(1000);
+    //---------------------------------------
+    mainC_update_timer = new QTimer();
+    connect(mainC_update_timer, SIGNAL(timeout()), this, SLOT(mainC_updatePads()));
+    mainC_update_timer->start(1000);
+    //    //---------------------------------------
+    //    eventC_update_timer = new QTimer();
+    //    connect(eventC_update_timer, SIGNAL(timeout()), this, SLOT(eventC_updatePads()));
+    //    eventC_update_timer->start(5);
+
+}
+void MainWindow::stopCanvasUpdates()
+{
+    //    update_timer->stop();
+    mainC_update_timer->stop();
+    //    eventC_update_timer->stop();
+}
+void MainWindow::updatePads()
+{
+    c_main->Modified();
+    c_main->Update();
+
+    //    c_event->ModAndUpd_Pads();
+}
+void MainWindow::mainC_updatePads()
+{
+    for(int i=1;i<=canvas_size_in_x*canvas_size_in_y;i++)
     {
-        for(Chamber *c:chambers)
-            if(c->getName()==chname)
-                return c;
-        return NULL;
+        c_main->cd(i);//pads or i
+        gPad->Modified();
+        gPad->Update();
     }
-    Chip* MainWindow::findChip(QString chname)
+
+    for(int i=1;i<=canvas_size_in_x*canvas_size_in_y;i++)
     {
-        for(Chip *c:chips)
-            if(c->getName()==chname)
-                return c;
-        return NULL;
+        c_event->cd(i);//pads or i
+        gPad->Modified();
+        gPad->Update();
     }
-    void MainWindow::printInfo()
+
+    //    c_main->Modified();
+    //    c_main->Update();
+    //    c_event->Modified();
+    //    c_event->Update();
+    gSystem->ProcessEvents();
+}
+void MainWindow::eventC_updatePads()
+{
+    //    c_event->ModAndUpd_Pads();
+    c_event->Modified();
+    c_event->Update();
+}
+/// UI CONTROL ---------------------------------------------------------------------------------------------
+void MainWindow::treeSelectionChanged()
+{
+    ///stop the updates
+    stopCanvasUpdates();
+    c_main->Clear();
+    c_event->Clear();
+
+    //selected items list
+    QList<QTreeWidgetItem *> list = ui->setupTreeWidget->selectedItems();
+
+    //if list is empty, draw everything
+    if(list.size()==0)
     {
-        qDebug() << "------------------";
-        for(int i=0;i<chambers.size();i++)
+        //qDebug() << "Empty tree selection";
+        canvas_size_in_y = chips.size();
+        canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+    }
+    else
+    {
+        //        qDebug() << "SELECTED ITEMS:";
+
+        //        for(QTreeWidgetItem * s: list)
+        //        {
+        //            if(s->parent())
+        //                qDebug() << s->parent()->text(0) <<" : "<<s->text(0);
+        //            else
+        //                qDebug()<<s->text(0);
+        //        }
+
+        //that way we can monitor a board/chamber and a specific chip at the same time
+        canvas_size_in_y = list.size();
+        canvas_size_in_x = Chip::getNoOfStatisticsHistos();
+    }
+
+    //redo the setup
+    setupCanvas();
+    ///restart updates
+    startCanvasUpdates();
+}
+/// TOOLS ----------------------------------------------------------------------------------------------------------------
+Chamber* MainWindow::findChamber(QString chname)
+{
+    for(Chamber *c:chambers)
+        if(c->getName()==chname)
+            return c;
+    return NULL;
+}
+Chip* MainWindow::findChip(QString chname)
+{
+    for(Chip *c:chips)
+        if(c->getName()==chname)
+            return c;
+    return NULL;
+}
+void MainWindow::printInfo()
+{
+    qDebug() << "------------------";
+    for(int i=0;i<chambers.size();i++)
+    {
+        Chamber* c=chambers.at(i);
+        qDebug()<<c->getName();
+        for(int j=0;j<chips.size();j++)
         {
-            Chamber* c=chambers.at(i);
-            qDebug()<<c->getName();
-            for(int j=0;j<chips.size();j++)
-            {
-                Chip* cc=chips.at(j);
-                qDebug()<<cc->getName();
-            }
+            Chip* cc=chips.at(j);
+            qDebug()<<cc->getName();
         }
-        qDebug() << "------------------";
     }
-    void MainWindow::debug(QString s)
+    qDebug() << "------------------";
+}
+void MainWindow::debug(QString s)
+{
+    if(debugMode)
+        qDebug() << s;
+}
+/// WHATEVERS -------------------------------------------------------------------------------------------------------------
+//MainWindow::~MainWindow() {delete ui;}
+void MainWindow::on_showStatisticsCheckBox_stateChanged(int arg1)
+{
+    //    if(ui->showStatisticsCheckBox->isChecked())
+    //        c_main->Show();
+    //    else
+    //        c_main->();
+}
+void MainWindow::on_showEventCheckBox_stateChanged(int arg1)
+{
+    //    if(ui->showEventCheckBox->isChecked())
+    //        c_event->show();
+    //    else
+    //        c_event->hide();
+}
+void MainWindow::on_b_Reset_released()
+{
+    resetAllHistos();
+}
+void MainWindow::on_b_Pause_released()
+{
+    if(isPaused)
     {
-        if(debugMode)
-            qDebug() << s;
+        isPaused = false;
+        ui->b_Pause->setText("Pause");
     }
-    /// WHATEVERS -------------------------------------------------------------------------------------------------------------
-    //MainWindow::~MainWindow() {delete ui;}
-    void MainWindow::on_showStatisticsCheckBox_stateChanged(int arg1)
+    else
     {
-        if(ui->showStatisticsCheckBox->isChecked())
-            c_main->show();
-        else
-            c_main->hide();
-    }
-    void MainWindow::on_showEventCheckBox_stateChanged(int arg1)
-    {
-        if(ui->showEventCheckBox->isChecked())
-            c_event->show();
-        else
-            c_event->hide();
-    }
-    void MainWindow::on_b_Reset_released()
-    {
-        resetAllHistos();
-    }
-    void MainWindow::on_b_Pause_released()
-    {
-        if(isPaused)
-        {
-            isPaused = false;
-            ui->b_Pause->setText("Pause");
-        }
-        else
-        {
-            isPaused = true;
-            ui->b_Pause->setText("Resume");
-        }
-
+        isPaused = true;
+        ui->b_Pause->setText("Resume");
     }
 
-    void MainWindow::on_b_clearTreeSelection_released()
-    {
-        ui->setupTreeWidget->clearSelection();
-    }
+}
+
+void MainWindow::on_b_clearTreeSelection_released()
+{
+    ui->setupTreeWidget->clearSelection();
+}
