@@ -6,7 +6,7 @@ Qt application to monitor VMM chips, through the DAQ software found at https://g
 
 ## Pre-requisites:
 
-0. Linux! (not Mac)
+0. Linux! (for Mac follow [this](https://gitlab.cern.ch/aikoulou/vmm-mon/tree/MacTest) branch [still experimental])
 1. Qt 5.5 or greater (recommended 5.7, see [here](https://download.qt.io/archive/qt/5.7/5.7.0/))
 2. ROOT 5.34 (find it [here](https://root.cern/content/release-53436))
 
