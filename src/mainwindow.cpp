@@ -104,7 +104,7 @@ Option 2) This is for optimizing for high rates.
     ///here we do FORMAT Option 2 (one packet, many hits, but even if one, doesn't matter)
     //with fill strategy 1
 
-    QStringList list = data.split(" ");
+    QStringList list = data.split(" ", QString::SkipEmptyParts);
     //    qDebug() << "list size = "<<list.size();
     tmp_list1 = list.at(1);
     //tree config packet
