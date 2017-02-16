@@ -123,7 +123,7 @@ Option 2) This is for optimizing for high rates.
     ///here we do FORMAT Option 2 (one packet, many hits, but even if one, doesn't matter)
     //with fill strategy 1
 
-    QStringList list = data.split(" ");
+    QStringList list = data.split(" ", QString::SkipEmptyParts);
     //    qDebug() << "list size = "<<list.size();
     tmp_list1 = list.at(1);
     //tree config packet
@@ -170,8 +170,13 @@ Option 2) This is for optimizing for high rates.
     }//if config msg
     else if(isConfigured)//normal data packet, and config=received
     {
+        packets_recvd++;
+        if(packets_recvd%1000==0)
+            qDebug() << packets_recvd << " SENT";
+
         //old format, simplified
 
+	if(list.size()%6==0)
         //size must be a multiple of 6!!
         for(int i=0;i<list.size();i+=6)
         {
@@ -183,6 +188,10 @@ Option 2) This is for optimizing for high rates.
                  list.at(i+5).toInt()
                  );
         }
+	else
+	{
+		qDebug() << "strange packet from DAQ: " << data ;
+	}
 
     }//else if (normal packets)
 }
@@ -401,7 +410,7 @@ void MainWindow::startCanvasUpdates()
 //    //---------------------------------------
     eventC_update_timer = new QTimer();
     connect(eventC_update_timer, SIGNAL(timeout()), this, SLOT(eventC_updatePads()));
-    eventC_update_timer->start(500);
+    eventC_update_timer->start(1000);
 
 }
 void MainWindow::stopCanvasUpdates()
