@@ -53,6 +53,7 @@ private:
     QTimer* update_timer;
     QTimer* mainC_update_timer;
     QTimer* eventC_update_timer;
+    int packets_recvd=0;
 
     bool isPaused=false;
 
